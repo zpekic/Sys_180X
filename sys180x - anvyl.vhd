@@ -2,10 +2,10 @@
 -- Company: @Home
 -- Engineer: zpekic@hotmail.com
 -- 
--- Create Date: 12/05/2019 9:45:02 PM
+-- Create Date: 05/12/2020 9:45:02 PM
 -- Design Name: 
--- Module Name: sys9080 - Behavioral
--- Project Name: Simple system around microcode implemented TMS9900 CPU
+-- Module Name: sys180x-anvyl - Behavioral
+-- Project Name: Simple system around microcode implemented CDP1802 CPU
 -- Target Devices: https://reference.digilentinc.com/_media/anvyl:anvyl_rm.pdf
 -- Tool Versions: ISE 14.7 (nt)
 -- Description: 
@@ -45,26 +45,27 @@ entity sys180x_anvyl is
 				--   0   1  UART trace 38400 baud
 				--   1   1  VGA trace
 				-- SW(3)
-				--		0 execute code from DIP switches
-				-- 	1 execute test program
+				--		0 select ROM0
+				-- 	1 select ROM1
 				-- SW(4)
-				-- not used
+				-- 	0 1802 mode
+				--    1 1805 mode
 				-- SW(6 downto 5) -- system clock speed 
-				--   0   0	1Hz	(can be used with SS mode)
+				--   0   0	16Hz	(can be used with SS mode)
 				--   0   1	1024Hz (can be used with SS mode)
-				--   1   0  6.125MHz
+				--   1   0  12.5MHz
 				--   1   1  25MHz
 				-- SW7
 				--   0   single step mode off (BTN3 should be pressed once to start the system)
 				--   1   single step mode on (use with BTN3)
 				SW: in std_logic_vector(7 downto 0); 
 				-- Push buttons 
-				-- BTN0 - generate RST 7 interrupt which will dump processor regs and memory they are pointing to over ACIA0
-				-- BTN1 - bypass ACIA Rx char input processing and dump received bytes and status to ACIA0
-				-- BTN2 - put processor into HOLD mode
+				-- BTN0 - generate interrupt
+				-- BTN1 - show digits 6 and 7 (not 4 and 5) on 7seg LEDs
+				-- BTN2 - reset
 				-- BTN3 - single step clock cycle forward if in SS mode (NOTE: single press on this button is needed after reset to unlock SS circuit)
 				BTN: in std_logic_vector(3 downto 0); 
-				-- 6 7seg LED digits on baseboard 
+				-- 6 7seg LED digits
 				SEG: out std_logic_vector(6 downto 0); 
 				AN: out std_logic_vector(5 downto 0); 
 				DP: out std_logic; 
@@ -82,27 +83,18 @@ entity sys180x_anvyl is
 				--DIP switches
 				DIP_B4, DIP_B3, DIP_B2, DIP_B1: in std_logic;
 				DIP_A4, DIP_A3, DIP_A2, DIP_A1: in std_logic;
-				-- TFT
-				TFT_R_O: out std_logic_vector(7 downto 0);
-				TFT_G_O: out std_logic_vector(7 downto 0);
-				TFT_B_O: out std_logic_vector(7 downto 0);
-				TFT_CLK_O: out std_logic;
-				TFT_DE_O: out std_logic;
-				TFT_DISP_O: out std_logic;
-				TFT_BKLT_O: out std_logic;
-				TFT_VDDEN_O: out std_logic;
 --				-- Hex keypad
 				KYPD_COL: out std_logic_vector(3 downto 0);
 				KYPD_ROW: in std_logic_vector(3 downto 0);
 				-- SRAM --
---				SRAM_CS1: out std_logic;
---				SRAM_CS2: out std_logic;
---				SRAM_OE: out std_logic;
---				SRAM_WE: out std_logic;
---				SRAM_UPPER_B: out std_logic;
---				SRAM_LOWER_B: out std_logic;
---				Memory_address: out std_logic_vector(18 downto 0);
---				Memory_data: inout std_logic_vector(15 downto 0);
+				SRAM_CS1: out std_logic;
+				SRAM_CS2: out std_logic;
+				SRAM_OE: out std_logic;
+				SRAM_WE: out std_logic;
+				SRAM_UPPER_B: out std_logic;
+				SRAM_LOWER_B: out std_logic;
+				Memory_address: out std_logic_vector(18 downto 0);
+				Memory_data: inout std_logic_vector(15 downto 0);
 				-- Red / Yellow / Green LEDs
 				LDT1G: out std_logic;
 				LDT1Y: out std_logic;
@@ -116,7 +108,16 @@ entity sys180x_anvyl is
 				RED_O: out std_logic_vector(3 downto 0);
 				GREEN_O: out std_logic_vector(3 downto 0);
 				BLUE_O: out std_logic_vector(3 downto 0)
-				-- ACIA chip signal connections
+				-- TFT
+--				TFT_R_O: out std_logic_vector(7 downto 0);
+--				TFT_G_O: out std_logic_vector(7 downto 0);
+--				TFT_B_O: out std_logic_vector(7 downto 0);
+--				TFT_CLK_O: out std_logic;
+--				TFT_DE_O: out std_logic;
+--				TFT_DISP_O: out std_logic;
+--				TFT_BKLT_O: out std_logic;
+--				TFT_VDDEN_O: out std_logic;
+				-- breadboard signal connections
 --				BB1: out std_logic;
 --				BB2: out std_logic;
 --				BB3: out std_logic;
@@ -126,7 +127,7 @@ entity sys180x_anvyl is
 --				BB7: out std_logic;
 --				BB8: out std_logic;
 --				BB9: out std_logic;
---				BB10: in std_logic;
+--				BB10: out std_logic
           );
 end sys180x_anvyl;
 
@@ -178,6 +179,15 @@ component sixdigitsevensegled is
 			 );
 end component;
 
+component uart_receiver is
+    Port ( reset : in  STD_LOGIC;
+           clk : in  STD_LOGIC;
+           din : in  STD_LOGIC;
+           dout : out  STD_LOGIC_VECTOR (7 downto 0);
+           dout_frame : out  STD_LOGIC;
+           dout_valid : in  STD_LOGIC);
+end component;
+
 component mcsmp20b IS
   PORT (
     clka : IN STD_LOGIC;
@@ -188,6 +198,35 @@ component mcsmp20b IS
     douta : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
 END component;
+
+component hexfilerom is
+	 generic (
+		filename: string := "";
+		address_size: positive := 8;
+		max_address: STD_LOGIC_VECTOR(15 downto 0) := X"0000";
+		default_value: STD_LOGIC_VECTOR(7 downto 0) := X"00"
+		); 
+    Port (           
+			  clk: in STD_LOGIC;
+			  D : out  STD_LOGIC_VECTOR (7 downto 0);
+           A : in  STD_LOGIC_VECTOR ((address_size - 1) downto 0);
+           nRead : in  STD_LOGIC;
+           nSelect : in  STD_LOGIC);
+end component;
+
+component simpleram is
+	 generic (
+		address_size: integer;
+		default_value: STD_LOGIC_VECTOR(7 downto 0)
+	  );
+    Port (       
+			  clk: in STD_LOGIC;
+			  D : inout  STD_LOGIC_VECTOR (7 downto 0);
+           A : in  STD_LOGIC_VECTOR ((address_size - 1) downto 0);
+           nRead : in  STD_LOGIC;
+           nWrite : in  STD_LOGIC;
+           sel : in  STD_LOGIC);
+end component;
 
 component CDP180X is
     Port ( CLOCK : in  STD_LOGIC;
@@ -340,20 +379,6 @@ end component;
 --  );
 --END component;
 
---component simpleram is
---	 generic (
---		address_size: integer;
---		default_value: STD_LOGIC_VECTOR(7 downto 0)
---	  );
---    Port (       
---			  clk: in STD_LOGIC;
---			  D : inout  STD_LOGIC_VECTOR (7 downto 0);
---           A : in  STD_LOGIC_VECTOR ((address_size - 1) downto 0);
---           nRead : in  STD_LOGIC;
---           nWrite : in  STD_LOGIC;
---           sel : in  STD_LOGIC);
---end component;
-
 --component io_port is
 --    Port ( 	clk: in STD_LOGIC;
 --				nMRD : in  STD_LOGIC;
@@ -367,26 +392,46 @@ end component;
 
 -- CPU buses
 signal D: std_logic_vector(7 downto 0);
-signal AL: std_logic_vector(7 downto 0);
-signal AH: std_logic_vector(7 downto 0);
+--signal AL: std_logic_vector(7 downto 0);
+--signal AH: std_logic_vector(7 downto 0);
 signal A: std_logic_vector(15 downto 0);
-signal Reset, nReset, nWait: std_logic;
-signal clock_main: std_logic;
+alias AH: std_logic_vector(7 downto 0) is A(15 downto 8);
+alias AL: std_logic_vector(7 downto 0) is A(7 downto 0);
 signal N: std_logic_vector(2 downto 0);
 signal SC: std_logic_vector(1 downto 0);
 signal nMRD, nMWR, TPA, TPB: std_logic;
 signal Q, nEF3: std_logic;
+signal nME: std_logic;
+
+signal Reset, nReset, nWait: std_logic;
+signal clock_main: std_logic;
 
 signal ram_write: std_logic;
 signal dmem: std_logic_vector(7 downto 0);
 signal wea: std_logic_vector(3 downto 0);
 signal douta: std_logic_vector(31 downto 0);
 
+signal nROMSel : std_logic;
+signal nExtRamEnable, nExtRamRead, nExtRamWrite: std_logic;
+signal xmem: std_logic_vector(7 downto 0);
 
 -- other signals
 signal reset_delay: std_logic_vector(3 downto 0);
+
 signal switch: std_logic_vector(7 downto 0);
+alias sw_ssmode: 		std_logic is switch(7);
+alias sw_cpufreq: 	std_logic_vector(1 downto 0) is switch(6 downto 5);
+alias sw_1805mode: 	std_logic is switch(4);
+alias sw_romsel: 		std_logic is switch(3);
+alias sw_tracemode: 	std_logic_vector(1 downto 0) is switch(2 downto 1);
+alias sw_showcpu: 	std_logic is switch(0);
+
 signal button: std_logic_vector(7 downto 0);
+alias btn_start: 	std_logic is button(3);
+alias btn_reset: 	std_logic is button(2);
+alias btn_show67: std_logic is button(1);
+alias btn_interrupt: std_logic is button(0);
+
 signal hexData, hexBus, hexCpu, hexTTY: std_logic_vector(3 downto 0);
 --signal test_code: std_logic_vector(7 downto 0);
 signal out4: std_logic_vector(7 downto 0);
@@ -407,10 +452,10 @@ signal vga_cursor_enable: std_logic;
 signal vga_char: std_logic_vector(7 downto 0);
 
 -- TFT
-signal tft_memaddr: std_logic_vector(15 downto 0);
-signal tft_hactive, tft_vactive: std_logic;
-signal tft_cursor_enable: std_logic;
-signal tft_char: std_logic_vector(7 downto 0);
+--signal tft_memaddr: std_logic_vector(15 downto 0);
+--signal tft_hactive, tft_vactive: std_logic;
+--signal tft_cursor_enable: std_logic;
+--signal tft_char: std_logic_vector(7 downto 0);
 
 -- KBD (hex 4*4 keyboard)
 signal kbd_ready: std_logic;
@@ -431,6 +476,8 @@ signal vgatracer_ascii, uarttracer_ascii, cputrace_ascii, bustrace_ascii: std_lo
 signal uarttracer_ready, vgatracer_ready, cputrace_ready, bustrace_ready, traceEnabled, traceReady: std_logic;
 signal bus_wr, bus_rd, tty_wr, tty_rd: std_logic;
 signal bus_char, tty_char, mem_char: std_logic_vector(7 downto 0);
+signal traceExtended: std_logic;
+signal fetch, fetch_extended, fetch_sep_r1, fetch_sep_r5: std_logic;
 
 -- LED signals that also go to VGA
 signal led_anode: std_logic_vector(5 downto 0);
@@ -446,21 +493,37 @@ alias JA_RTS: std_logic is JA1;
 alias JA_RXD: std_logic is JA2;
 alias JA_TXD: std_logic is JA3;
 alias JA_CTS: std_logic is JA4;
+signal uart_data: std_logic_vector(7 downto 0);
+signal uart_valid, uart_frame: std_logic;
 
 -- auto tracer
 type mem256x1 is array(0 to 255) of std_logic;
 signal traceMem: mem256x1 := (others => '0');
 signal OpCode : std_logic_vector(7 downto 0);
-signal traceDone, fetch, tr_current, tr_previous: std_logic;
+signal traceDone, tr_current, tr_previous: std_logic;
 
 begin
    
 	Reset <= BTN(2); --USR_BTN;
 	nReset <= '0' when (Reset = '1') or (reset_delay /= "0000") else '1'; 
+	-- delay to generate nReset 4 cycles after reset
+	generate_nReset: process (clock_main, Reset)
+	begin
+		if (Reset = '1') then
+			reset_delay <= "1111";
+		else
+			if (rising_edge(clock_main)) then
+				reset_delay <= reset_delay(2 downto 0) & Reset;
+			end if;
+		end if;
+	end process;
 	
 	-- "bit bang" serial connected to Q and nEF3
 	JA_RXD <= (Q xor DIP_A1);
 	nEF3 <= (JA_TXD xor DIP_A2);
+	
+	--BB9 <= (Q xor DIP_A1);
+	--BB10 <= (JA_TXD xor DIP_A2);
 	
 	scanCnt <= freq32 & freq64 & freq128 & freq256;
 	
@@ -476,7 +539,7 @@ begin
 			  hexdata => hexData,
 			  digsel => ledDigSel,
            showdigit => "111111",
-			  showdot => '0' & switch(0) & "0100",
+			  showdot => '0' & sw_showcpu & "0100",
            showsegments => busActive,
 			  show76 => button(1),
 			  -- outputs
@@ -495,8 +558,10 @@ begin
 						A(7 downto 4) when "011",
 						A(11 downto 8) when "100",
 						A(15 downto 12) when "101",
-						kbd_buffer(3 downto 0) when "110",
-						kbd_buffer(7 downto 4) when "111";
+						--kbd_buffer(3 downto 0) when "110",
+						--kbd_buffer(7 downto 4) when "111";
+						KYPD_ROW(3 downto 0) when "110",
+						button(7 downto 4) when "111";
 
 --		hexBus <= 	D(3 downto 0) when "000",
 --						D(7 downto 4) when "001",
@@ -506,9 +571,9 @@ begin
 --						OpCode(7 downto 4) when "101",
 --						"0000" when others;
 						
-	 hexData <= hexCpu when (switch(0) = '1') else hexBus;
+	 hexData <= hexCpu when (sw_showcpu = '1') else hexBus;
 	 --hexData <= hexTTY when (switch(0) = '1') else hexBus;
-	 busActive <= '1' when (switch(0) = '1') else not(nMRD and nMWR);
+	 busActive <= '1' when (sw_showcpu = '1') else not(nMRD and nMWR);
 	 
     -- FREQUENCY GENERATOR
     one_sec: clock_divider
@@ -549,13 +614,13 @@ begin
 	-- Single step by each clock cycle, slow or fast
 	ss: clocksinglestepper port map (
         reset => Reset,
-        clock3_in => freq6M25,
-        clock2_in => freq1M5625,
-        clock1_in => freq8,
-        clock0_in => freq2,
-        clocksel => switch(6 downto 5),
-        modesel => switch(7), -- or selMem,
-        singlestep => button(3),
+        clock3_in => freq25M,
+        clock2_in => freq12M5,
+        clock1_in => freq1M5625,
+        clock0_in => freq16,
+        clocksel => sw_cpufreq,
+        modesel => sw_ssmode, -- or selMem,
+        singlestep => btn_start,
         clock_out => clock_main
     );
 
@@ -565,33 +630,23 @@ begin
 			width => 16	 
 		)
 		port map (
-			clock => freq1k,
+			clock => freq2k,
 			reset => Reset,
 			signal_raw(15 downto 8) => SW,
-			signal_raw(7 downto 4) => KYPD_ROW(3 downto 0) xor "1111",
+			signal_raw(7 downto 4) => KYPD_ROW(3 downto 0), -- xor "1111",
 			signal_raw(3 downto 0) => BTN(3 downto 0),
 
 			signal_debounced(15 downto 8) => switch,
 			signal_debounced(7 downto 0) => button
     );
 			
-	-- delay to generate nReset 4 cycles after reset
-	generate_nReset: process (clock_main, Reset)
-	begin
-		if (Reset = '1') then
-			reset_delay <= "1111";
-		else
-			if (rising_edge(clock_main)) then
-				reset_delay <= reset_delay(2 downto 0) & Reset;
-			end if;
-		end if;
-	end process;
-
 -- 64k memory is block RAM on the FPGA, pre-initialized with BASIC/Monitor in range 0x0000 - 0x7FFF
+-- 32-bit * 16k instead of 8 bit * 64 memory layout is due to Bin2Coe.exe utility by Pedro Ignacio Martos
+-- which converts into 32bit words.
 sysmem: mcsmp20b port map
 	(
-    clka => clock_main,
-    ena => '1',
+    clka => TPB,
+    ena => nME,
     wea => wea,
     addra => A(15 downto 2),
     dina => D & D & D & D,
@@ -605,15 +660,93 @@ with A(1 downto 0) select
 				douta(23 downto 16) when "10",
 				douta(31 downto 24) when "11";
 	
-D <= dmem when (nMRD = '0') else "ZZZZZZZZ";
+D <= dmem when (nMRD = '0' and nME = '1') else "ZZZZZZZZ";
 
 -- memory write path
-ram_write <= A(15) and (not nMWR);
+--ram_write <= A(15) and (not nMWR);
+ram_write <= not nMWR;
 
 wea(0) <= ram_write when (A(1 downto 0) = "00") else '0';
 wea(1) <= ram_write when (A(1 downto 0) = "01") else '0';
 wea(2) <= ram_write when (A(1 downto 0) = "10") else '0';
 wea(3) <= ram_write when (A(1 downto 0) = "11") else '0';
+
+--
+-- BASIC3+MONITOR: http://www.sunrise-ev.com/MembershipCard/MCSMP20.pdf
+-- Author: Chuch Yakym
+--firmware0: hexfilerom 
+--	 generic map 
+--	 (
+--			filename => "firmware\mcsmp20b.hex",
+--			address_size => 15,
+--			max_address => X"499F",
+--			default_value => X"C4" -- NOP opcode
+--	 )
+--    Port map 
+--	 (           
+--			  clk => TPB,
+--			  D => D,
+--           A => A(14 downto 0),
+--           nRead => nMRD,
+--           nSelect => nRomSel or switch(3)
+--	  );
+--
+------ Tiny BASIC + Monitor: http://www.retrotechnology.com/memship/mship_tbasic.html
+------ Authors: TMSI/RCA/Pittman Tiny BASIC, fixes by Loren Christiansen and others
+--firmware1: hexfilerom 
+--	 generic map 
+--	 (
+--			filename => "firmware\tb0_test.hex",
+--			address_size => 12,
+--			max_address => X"0DAF",
+--			default_value => X"C4" -- NOP opcode
+--	 )
+--    Port map 
+--	 (           
+--			  clk => TPB,
+--			  D => D,
+--           A => A(11 downto 0),
+--           nRead => nMRD,
+--           nSelect => nRomSel or (not switch(3))
+--	  );
+----
+--nROMSel <= A(15) when (switch(3) = '0') else (A(15) or A(14) or A(13) or A(12)); 
+--
+---- Internal memory
+----ram4k: simpleram 
+----	 generic map
+----	 (
+----			address_size => 12,
+----			default_value => X"C4" -- NOP opcode
+----	 )
+----    Port map 
+----	 (       
+----			clk => TPB,
+----			D => D,
+----			A => A(11 downto 0),
+----			nRead => nMRD,
+----			nWrite => nMWR,
+----			sel => nROMSel
+----	 );
+--
+---- External memory
+--	nExtRamEnable <= not nROMSel;
+--	nExtRamRead <=   nMRD or nExtRamEnable;
+--	nExtRamWrite <=  nMWR or nExtRamEnable;
+--
+--	SRAM_CS1 <= '0';
+--	SRAM_CS2 <= '1';
+--	SRAM_OE <= nExtRamRead;
+--	SRAM_WE <= nExtRamWrite;
+--	SRAM_UPPER_B <= not A(0);
+--	SRAM_LOWER_B <= A(0);
+--	Memory_address <= "0000" & A(15 downto 1);
+--
+--	--Memory_data(15 downto 8) <= D when (nExtRamWrite = '0') else "ZZZZZZZZ";
+--	--Memory_data(7 downto 0) <= D when (nExtRamWrite = '0') else "ZZZZZZZZ";
+--	Memory_data <= D & D when (nExtRamWrite = '0') else "ZZZZZZZZZZZZZZZZ";
+--	xmem <= Memory_data(15 downto 8) when (A(0) = '1') else Memory_data(7 downto 0);
+--	D <= xmem when (nExtRamRead = '0') else "ZZZZZZZZ";
 
 -- CPU
     cpu: cdp180x Port map
@@ -624,13 +757,13 @@ wea(3) <= ram_write when (A(1 downto 0) = "11") else '0';
            SC => SC,
            nMRD => nMRD,
            DBUS => D,
-           nME => '1', -- disable internal memory
+           nME => nME,
            N => N, 
            nEF4 => '1',
            nEF3 => nEF3,
            nEF2 => '1',
            nEF1 => '1',
-           MA => AL,
+           MA => open, --AL,
            TPB => TPB,
            TPA => TPA,
            nMWR => nMWR,
@@ -639,7 +772,7 @@ wea(3) <= ram_write when (A(1 downto 0) = "11") else '0';
            nDMAIN => '1',
            nXTAL => open,
 			  -- extra signals (not in original chip)
-			  mode_1805 => '0', -- original 1802 functionality only
+			  mode_1805 => sw_1805mode, -- original 1802 functionality only
 			  A => A,
            hexSel => ledDigSel,
            hexOut => hexCpu,
@@ -648,44 +781,75 @@ wea(3) <= ram_write when (A(1 downto 0) = "11") else '0';
            traceReady => traceReady
 			 );
 
-traceEnabled <= '0' when (switch(2 downto 1) = "00") else '1'; --not(tr_current and tr_previous);
-traceReady <= vgatracer_ready and uarttracer_ready;
-
--- automatic tracing!
-fetch <= (not nMRD) when (SC = "00") else '0';
-autotrace_start: process(reset, TPB, traceMem, D, tr_current, tr_previous)
-begin
-	if (reset = '1') then
-			tr_current <= '0';
-			tr_previous <= '0';
-		else 
-			if (rising_edge(TPB)) then
-
-				if (fetch = '1') then
-					tr_previous <= tr_current;
-					tr_current <= traceMem(to_integer(unsigned(D)));
-					OpCode <= D;
-				end if;
-
-			end if;
-	end if;
-end process;
-
-traceDone <= traceReady when (cputrace_ascii = X"0A") else '0';
-autotrace_end: process(traceDone, OpCode, traceMem)
-begin
-	if (rising_edge(traceDone)) then
-		traceMem(to_integer(unsigned(OpCode))) <= '1';
-	end if;
-end process;
+-- enable internal memory for 8000 - 803F
+nME <= (not sw_1805mode) when (A(15 downto 6) = "1000000000") else '1';
 
 -- capture upper addressbus
-address_upper: process(TPA, AL)
+
+--A <= AH & AL;
+--
+--address_upper: process(TPA, AL)
+--begin
+--	if (falling_edge(TPA)) then
+--		AH <= AL;
+--	end if;
+--end process;
+
+--traceEnabled <= '0' when (switch(2 downto 1) = "00") else '1'; --not(tr_current and tr_previous);
+traceReady <= vgatracer_ready and uarttracer_ready;
+
+with sw_tracemode select
+	traceEnabled <= 	'0' when "00",
+							'1' when "01",
+							'1' when "10",
+							traceExtended when "11";
+
+fetch <= not (nMRD or SC(1) or SC(0));
+fetch_extended <= fetch when (D = X"68") else '0'; -- escape for extended instructions in 1805 mode
+fetch_sep_r1	<= fetch when (D = X"D1") else '0';	-- SEP R1 returns to Monitor (see 'R' in http://www.sunrise-ev.com/MembershipCard/MCSMP20.pdf)
+fetch_sep_r5	<= fetch when (D = X"D5") else '0';	-- SEP R5 returns to BASIC (see 'CALL' in http://www.sunrise-ev.com/MembershipCard/BASIC3v11user.pdf)
+							
+set_traceExtended: process(TPB, D, nMWR, SC)
 begin
-	if (falling_edge(TPA)) then
-		AH <= AL;
+	if (reset = '1') then
+		traceExtended <= '0';
+	else
+		if (falling_edge(TPB)) then
+			if (traceExtended = '0') then
+				traceExtended <= sw_1805mode and fetch_extended;
+			else 
+				traceExtended <= not (fetch_sep_r1 or fetch_sep_r5);
+			end if;
+		end if;
 	end if;
 end process;
+
+-- automatic tracing!
+--autotrace_start: process(reset, TPB, traceMem, D, tr_current, tr_previous)
+--begin
+--	if (reset = '1') then
+--			tr_current <= '0';
+--			tr_previous <= '0';
+--		else 
+--			if (rising_edge(TPB)) then
+--
+--				if (fetch = '1') then
+--					tr_previous <= tr_current;
+--					tr_current <= traceMem(to_integer(unsigned(D)));
+--					OpCode <= D;
+--				end if;
+--
+--			end if;
+--	end if;
+--end process;
+--
+--traceDone <= traceReady when (cputrace_ascii = X"0A") else '0';
+--autotrace_end: process(traceDone, OpCode, traceMem)
+--begin
+--	if (rising_edge(traceDone)) then
+--		traceMem(to_integer(unsigned(OpCode))) <= '1';
+--	end if;
+--end process;
 
 --	D <= test_code when (nMRD = '0') else "ZZZZZZZZ";
 --	with A(2 downto 0) select
@@ -699,7 +863,7 @@ end process;
 	uart_tracer: traceunit Port map ( 
 				reset => reset,
 				clk => freq38400,
-				enable => switch(1),
+				enable => sw_tracemode(0),
 				char => cputrace_ascii,
 				char_sent => uarttracer_ready,
 				---
@@ -712,8 +876,8 @@ end process;
 	vga_tty: tty_screen Port map ( 
 				reset => reset,
 				clk => freq25M, --clock_main,
-				enable => switch(2),
-				char => cputrace_ascii,
+				enable => sw_tracemode(1),
+				char => cputrace_ascii, --uart_acii
 				char_sent => vgatracer_ready,
 				---
 				maxRow => X"3C", -- 60 rowns
@@ -795,12 +959,31 @@ with scanCnt(3 downto 2) select
 							button(6) when "10",
 							button(7) when "11";
 
+--	uart_in: uart_receiver Port map ( 
+--				reset => reset,
+--				clk => freq38400,
+--				din => JB_TXD,
+--				dout => uart_data,
+--				dout_frame => uart_frame,
+--				dout_valid => uart_valid
+--			);
+
+--capture_uart: process(reset, uart_valid, uart_data)
+--begin
+--	if (reset = '1') then
+--		kbd_buffer <= X"00";
+--	else
+--		if (rising_edge(uart_valid)) then
+--			kbd_buffer <= uart_data;
+--		end if;
+--	end if;
+
 capture_kypd: process(scanCnt, kypd_pressed, reset, kbd_buffer)
 begin
 	if (reset = '1') then
 		kbd_buffer <= X"00";
 	else
-		if (rising_edge(kypd_pressed)) then
+		if (falling_edge(kypd_pressed)) then
 			kbd_buffer <= kbd_buffer(3 downto 0) & std_logic_vector(to_unsigned(kbd2hex(to_integer(unsigned(scanCnt))), 4));
 		end if;
 	end if;
