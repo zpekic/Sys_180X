@@ -1,0 +1,8 @@
+INTSTYLE=ise
+INFILE=C:\Users\zoltanp\Documents\HexCalc\Sys_180X\sys180x_anvyl.ncd
+OUTFILE=C:\Users\zoltanp\Documents\HexCalc\Sys_180X\sys180x_anvyl.bit
+FAMILY=Spartan6
+PART=xc6slx45-3csg484
+WORKINGDIR=C:\Users\zoltanp\Documents\HexCalc\Sys_180X
+LICENSE=WebPack
+USER_INFO=210994392_0_0_816
