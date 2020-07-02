@@ -59,7 +59,7 @@ end tty_screen;
 
 architecture Behavioral of tty_screen is
 
-component mcc_control_unit is
+component tty_control_unit is
 	 Generic (
 			CODE_DEPTH : positive;
 			IF_WIDTH : positive
@@ -103,7 +103,7 @@ cursory_is_zero <= '1' when (cursory = X"00") else '0';
 tty_uinstruction <= tty_microcode(to_integer(unsigned(ui_address)));
 tty_instructionstart <= tty_mapper(to_integer(unsigned(data(MAPPER_ADDRESS_WIDTH - 1 downto 0))));
 
-cu: mcc_control_unit
+cu: tty_control_unit
 		generic map (
 			CODE_DEPTH => CODE_ADDRESS_WIDTH,
 			IF_WIDTH => CODE_IF_WIDTH

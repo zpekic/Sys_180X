@@ -1,48 +1,48 @@
 --------------------------------------------------------
--- mcc V0.9.0509 - Custom microcode compiler (c)2020-... 
+-- mcc V0.9.0627 - Custom microcode compiler (c)2020-... 
 --    https://github.com/zpekic/MicroCodeCompiler
 --------------------------------------------------------
 Compiling tty_screen.mcc, pass 1 out of 2.
-Line 74: resolved aliases:  gosub
-L0074@0006.main: if false then next else printChar
+Line 75: resolved aliases:  gosub
+L0075@0006.main: if false then next else printChar
 
-Line 80: resolved aliases:  goto
-L0080@0009. cursorx <= zero,if false then next else LF
+Line 81: resolved aliases:  goto
+L0081@0009. cursorx <= zero,if false then next else LF
 
-Line 92: resolved aliases:  gosub
-L0092@000D.nextCol: if false then next else printChar
+Line 93: resolved aliases:  gosub
+L0093@000D.nextCol: if false then next else printChar
 
-Line 103: resolved aliases:  goto
-L0103@0012.HOME: cursorx <= zero, cursory <= zero,if false then next else nextChar
+Line 104: resolved aliases:  goto
+L0104@0012.HOME: cursorx <= zero, cursory <= zero,if false then next else nextChar
 
-Line 119: resolved aliases:  gosub
-L0119@0019. cursory <= inc,if false then next else readMem
+Line 120: resolved aliases:  gosub
+L0120@0019. cursory <= inc,if false then next else readMem
 
-Line 122: resolved aliases:  gosub
-L0122@001A. cursory <= dec,if false then next else printChar
+Line 123: resolved aliases:  gosub
+L0123@001A. cursory <= dec,if false then next else printChar
 
-Line 125: resolved aliases:  goto
-L0125@001B. cursorx <= inc,if false then next else copyCol
+Line 126: resolved aliases:  goto
+L0126@001B. cursorx <= inc,if false then next else copyCol
 
-Line 128: resolved aliases:  goto
-L0128@001C.nextY: cursory <= inc,if false then next else copyRow
+Line 129: resolved aliases:  goto
+L0129@001C.nextY: cursory <= inc,if false then next else copyRow
 
-Line 135: resolved aliases:  gosub
-L0135@001F. if false then next else printChar
+Line 136: resolved aliases:  gosub
+L0136@001F. if false then next else printChar
 
-Line 137: resolved aliases:  goto
-L0137@0020. cursorx <= inc,if false then next else clearCol
+Line 138: resolved aliases:  goto
+L0138@0020. cursorx <= inc,if false then next else clearCol
 
-Line 141: resolved aliases:  goto
-L0141@0021.CR: cursorx <= zero,if false then next else nextChar
+Line 142: resolved aliases:  goto
+L0142@0021.CR: cursorx <= zero,if false then next else nextChar
 
-Line 146: resolved aliases:  return
-L0146@0023. mem = write, xsel = cursorx, ysel = cursory,if false then next else return
+Line 147: resolved aliases:  return
+L0147@0023. mem = write, xsel = cursorx, ysel = cursory,if false then next else return
 
-Line 151: resolved aliases:  return
-L0151@0025. mem = read, xsel = cursorx, ysel = cursory, data <= memory,if false then next else return
+Line 152: resolved aliases:  return
+L0152@0025. mem = read, xsel = cursorx, ysel = cursory, data <= memory,if false then next else return
 
-Success: pass 1 154 line(s) read, 64 statement(s) parsed.
+Success: pass 1 155 line(s) read, 65 statement(s) parsed.
 Compiling tty_screen.mcc, pass 2 out of 2.
 Field 'ready' 31 .. 30
 Field 'seq_cond' 29 .. 27
@@ -267,5 +267,4 @@ Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\TTY_Screen\tty_screen_code.
 Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\TTY_Screen\tty_screen_code.cgf' ... Done.
 Generating code 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\TTY_Screen\tty_screen_code.vhd' ... Done.
 Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\TTY_Screen\tty_screen_code.hex' ... Done.
-Generating mapping: 
-Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\T
+Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\TTY_Screen\tty_screen_c
