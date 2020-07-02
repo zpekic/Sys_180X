@@ -1,16 +1,16 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company: @Home
+-- Engineer: zpekic@hotmail.com
 -- 
 -- Create Date:    12:25:11 04/21/2020 
--- Design Name: 
+-- Design Name: 	 CDP1802/5/6 compatible CPU in VHDL
 -- Module Name:    CDP180X - Behavioral 
 -- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Target Devices: Digilent Anvyl
+-- Tool versions:  Xilinx ISE 14.7
+-- Description: 	 This is proof of concept for mcc microcode compiler https://github.com/zpekic/MicroCodeCompiler
 --
--- Dependencies: 
+-- Dependencies:   
 --
 -- Revision: 
 -- Revision 0.01 - File Created
@@ -67,7 +67,7 @@ end CDP180X;
 
 architecture Behavioral of CDP180X is
 
-component mcc_control_unit is
+component cpu_control_unit is
 	 Generic (
 			CODE_DEPTH : positive;
 			IF_WIDTH : positive
@@ -94,27 +94,6 @@ component nibbleadder is
            y : out  STD_LOGIC_VECTOR (3 downto 0);
            cout : out  STD_LOGIC);
 end component;
-
--- conversion from 4 bit hex to ASCII
-type lookup is array(0 to 15) of std_logic_vector(7 downto 0);
-constant hex2char: lookup := (
-	std_logic_vector(to_unsigned(natural(character'pos('0')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('1')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('2')), 8)), 	
-	std_logic_vector(to_unsigned(natural(character'pos('3')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('4')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('5')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('6')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('7')), 8)),
-	std_logic_vector(to_unsigned(natural(character'pos('8')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('9')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('A')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('B')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('C')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('D')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('E')), 8)),	
-	std_logic_vector(to_unsigned(natural(character'pos('F')), 8))
-);
 
 -- architecture visible registers
 signal reg_d: std_logic_vector(7 downto 0); -- data register (== accumulator)
@@ -147,7 +126,7 @@ signal data_in: std_logic_vector(7 downto 0);	-- data captured from DBUS
 -- microcontrol related
 signal ui_address, ui_nextinstr: std_logic_vector(CODE_ADDRESS_WIDTH - 1 downto 0);
 signal instructionstart: std_logic_vector(7 downto 0);
-signal UCLK: std_logic;	-- microinstruction clock (drives machine forward on falling edge)
+signal UCLK: std_logic;	-- microinstruction clock (drives machine forward on rising edge)
 
 -- other
 signal cond_3X, cond_CX: std_logic;
@@ -163,6 +142,7 @@ signal seq_else: std_logic_vector(7 downto 0);
 -- tracer
 signal reg_trace: std_logic_vector(8 downto 0);
 signal hexTrace: std_logic_vector(3 downto 0);
+signal asciiOffs, asciiBase: std_logic_vector(7 downto 0);
 
 -- machine cycle signals
 signal mode_reset, mode_pause, mode_run, mode_load: std_logic;
@@ -180,13 +160,13 @@ signal cycle_rom: rom16x8 := (
 "00010001",	-- 21								RD				UC
 "00010001",	-- 30								RD				UC
 "00010001",	-- 31								RD				UC
-"00010000",	-- 40								RD
-"00010000",	-- 41								RD
-"00011000",	-- 50								RD	WR
-"00011000",	-- 51								RD	WR
-"00011100",	-- 60								RD	WR DI
-"01011100",	-- 61			TPB				RD	WR	DI
-"01011000",	-- 70			TPB				RD				
+"00010001",	-- 40								RD				UC
+"00010001",	-- 41								RD				UC
+"00011001",	-- 50								RD	WR			UC
+"00011001",	-- 51								RD	WR			UC
+"00011101",	-- 60								RD	WR DI		UC
+"01011101",	-- 61			TPB				RD	WR	DI		UC
+"01011001",	-- 70			TPB				RD	WR			UC
 "00000000"	-- 71												
 );
 signal cycle: std_logic_vector(7 downto 0);
@@ -206,8 +186,8 @@ signal state_rom: rom16x8 := (
 "01011011",		--		exec_memwrite,	//	0		1		0	1	1	0	1		1
 "01010111",		--		exec_ioread,	//	0		1		0	1	0	1	1		1
 "01100111",		--		exec_iowrite,	//	0		1		1	0	0	1	1		1
-"10000011",		--		dma_memread,	//	1		0		0	0	0	0	1		1
-"10000011",		--		dma_memwrite,	//	1		0		0	0	0	0	1		1
+"10100011",		--		dma_memread,	//	1		0		1	0	0	0	1		1
+"10010011",		--		dma_memwrite,	//	1		0		0	1	0	0	1		1
 "11000001",		--		int_nop,			//	1		1		0	0	0	0	0		1
 "00100000",		--		fetch_memread,	//	0		0		1	0	0	0	0		0
 "00000000",				
@@ -229,8 +209,8 @@ alias state_s1s2s3: 	std_logic is state(0);
 
 -- internal RAM
 signal ram_en: std_logic;
-type ram64x8 is array(0 to 63) of std_logic_vector(7 downto 0);
-signal ram: ram64x8;
+type internal_mem is array(0 to 63) of std_logic_vector(7 downto 0); 
+signal ram: internal_mem := (others => X"C4");
 
 begin
 
@@ -292,9 +272,9 @@ begin
 	end if;
 end process;
 
-write_ram: process(ram, cycle_wr, ram_en)
+write_ram: process(ram, cycle_wr, ram_en, state_wr)
 begin
-	if (falling_edge(cycle_wr) and ram_en = '1') then
+	if (falling_edge(cycle_wr) and ram_en = '1' and state_wr = '1') then
 		ram(to_integer(unsigned(reg_y(5 downto 0)))) <= alu_y;
 	end if;
 end process;
@@ -329,8 +309,9 @@ continue <= not (reg_int or reg_dma(1) or reg_dma(0));	-- no external signal rec
 
 -- when tracer is in "disable" mode, 1 microinstruction is executed per 1 clock cycle, when "enable" then
 -- it is executed per 1 machine cycle (TPB is the end of the cycle)
-sync <= '1'; -- when (cnt8 = "111") else '0';
-UCLK <= cycle_uc when (reg_trace(8) = '1') else CLOCK;
+sync <= '1' when (cnt8 = "111") else '0';
+UCLK <= not(cycle_uc) when (reg_trace(8) = '1') else CLOCK;
+--UCLK <= not(cnt8(2)) when (reg_trace(8) = '1') else CLOCK;
 
 -- control unit
 cpu_uinstruction <= cpu_microcode(to_integer(unsigned(ui_address)));
@@ -340,7 +321,7 @@ cpu_instructionstart <= cpu_mapper(to_integer(unsigned(reg_extend & reg_in)));
 -- "switch statement" for 8 possible combinations of DMA and INT states
 seq_else <= ("0001" & reg_dma & reg_int & '1') when (to_integer(unsigned(cpu_seq_cond)) = seq_cond_continue_sw) else cpu_seq_else;
 
-cu: mcc_control_unit
+cu: cpu_control_unit
 		generic map (
 			CODE_DEPTH => CODE_ADDRESS_WIDTH,
 			IF_WIDTH => CODE_IF_WIDTH
@@ -689,6 +670,9 @@ with cpu_seq_else(3 downto 0) select
 					reg_p						when "1110",
 					reg_x						when "1111";
 					
+asciiBase <= X"30" when (hexTrace(3) = '0' or (hexTrace = X"8") or (hexTrace = X"9")) else X"37";
+asciiOffs <= X"0" & hexTrace;
+					
 traceOut <= reg_trace(7 downto 0); -- reg_trace(8) can be used internally to enable/disable single stepping
 -- update TRACER register
 update_tracer: process(UCLK, cpu_reg_trace, cpu_seq_else)
@@ -703,7 +687,8 @@ begin
 				if (cpu_seq_else(7) = '0') then
 					reg_trace <= '0' & cpu_seq_else;	-- ascii char is in the microcode
 				else
-					reg_trace <= '0' & hex2char(to_integer(unsigned(hexTrace)));
+					--reg_trace <= '0' & hex2char(to_integer(unsigned(hexTrace)));
+					reg_trace <= '0' & std_logic_vector(unsigned(asciiBase) + unsigned(asciiOffs));
 				end if;
 			when others =>
 				null;

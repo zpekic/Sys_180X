@@ -1,16 +1,16 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company: @Home
+-- Engineer: zpekic@hotmail.com
 -- 
--- Create Date:    19:33:15 04/24/2020 
--- Design Name: 
--- Module Name:    mcc_control_unit - Behavioral 
+-- Create Date:    12:25:11 04/21/2020 
+-- Design Name: 	 Microcode controller unit
+-- Module Name:    
 -- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Target Devices: Digilent Anvyl
+-- Tool versions:  Xilinx ISE 14.7
+-- Description: 	 This is proof of concept for mcc microcode compiler https://github.com/zpekic/MicroCodeCompiler
 --
--- Dependencies: 
+-- Dependencies:   
 --
 -- Revision: 
 -- Revision 0.01 - File Created
@@ -107,5 +107,5 @@ begin
 	end if;
 end process;
 
-end Behavioral;
+end;
 
