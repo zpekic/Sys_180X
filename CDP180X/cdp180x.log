@@ -1,559 +1,559 @@
 --------------------------------------------------------
--- mcc V0.9.0627 - Custom microcode compiler (c)2020-... 
+-- mcc V0.9.1114 - Custom microcode compiler (c)2020-... 
 --    https://github.com/zpekic/MicroCodeCompiler
 --------------------------------------------------------
 Compiling cdp180X.mcc, pass 1 out of 2.
 Line 145: resolved aliases:  y_zero
-L0145@0002._reset2: reg_q <= zero,alu_f = xor, alu_r = d, alu_s = d, reg_in <= alu_y
+L0145@0002._reset2:  reg_q <= zero, alu_f = xor, alu_r = d, alu_s = d, reg_in <= alu_y
 
 Line 149: resolved aliases:  reg_clr, y_zero
-L0149@0003._reset3: reg_r <= zero, sel_reg = zero,reg_mie <= enable,reg_t <= xp,alu_f = xor, alu_r = d, alu_s = d, reg_x <= n, reg_p <= n,reg_extend <= zero
+L0149@0003._reset3:  reg_r <= zero, sel_reg = zero, reg_mie <= enable, reg_t <= xp, alu_f = xor, alu_r = d, alu_s = d, reg_x <= n, reg_p <= n, reg_extend <= zero
 
 Line 157: resolved aliases:  reg_inc, y_bus, fetch_memread
-L0157@0004.fetch: bus_state = fetch_memread, sel_reg = p, reg_in <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0157@0004.fetch:  bus_state = fetch_memread, sel_reg = p, reg_in <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Line 161: resolved aliases:  y_bus, exec_memread
-L0161@0005.load_b: bus_state = exec_memread, sel_reg = x, reg_b <= alu_y, alu_f = pass_s, alu_s = bus,if traceEnabled then traceState else fork
+L0161@0005.load_b:  bus_state = exec_memread, sel_reg = x, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, if traceEnabled then traceState else fork
 
 Line 171: resolved aliases:  goto, reg_inc, y_bus, fetch_memread
-L0171@0011.fetch1: bus_state = fetch_memread, sel_reg = p, reg_in <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else load_b
+L0171@0011.fetch1:  bus_state = fetch_memread, sel_reg = p, reg_in <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else load_b
 
 Line 175: resolved aliases:  y_const, int_nop
-L0175@0013.int_ack: bus_state = int_nop,alu_f = pass_s, alu_s = const, reg_t <= xp, reg_x <= alu_yhi, reg_p <= alu_ylo,reg_mie <= disable,if true then fetch else 0x21
+L0175@0013.int_ack:  bus_state = int_nop, alu_f = pass_s, alu_s = const, reg_t <= xp, reg_x <= alu_yhi, reg_p <= alu_ylo, reg_mie <= disable, if true then fetch else 0x21
 
 Line 181: resolved aliases:  reg_inc, dma_memread
-L0181@0015.dma_out: bus_state = dma_memread, sel_reg = zero, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0181@0015.dma_out:  bus_state = dma_memread, sel_reg = zero, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 185: resolved aliases:  reg_inc, dma_memread
-L0185@0017. bus_state = dma_memread, sel_reg = zero, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0185@0017.  bus_state = dma_memread, sel_reg = zero, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 189: resolved aliases:  reg_inc, dma_memwrite
-L0189@0019.dma_in: bus_state = dma_memwrite, sel_reg = zero, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0189@0019.dma_in:  bus_state = dma_memwrite, sel_reg = zero, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 193: resolved aliases:  reg_inc, dma_memwrite
-L0193@001B. bus_state = dma_memwrite, sel_reg = zero, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0193@001B.  bus_state = dma_memwrite, sel_reg = zero, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 197: resolved aliases:  reg_inc, dma_memwrite
-L0197@001D. bus_state = dma_memwrite, sel_reg = zero, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0197@001D.  bus_state = dma_memwrite, sel_reg = zero, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 201: resolved aliases:  reg_inc, dma_memwrite
-L0201@001F. bus_state = dma_memwrite, sel_reg = zero, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0201@001F.  bus_state = dma_memwrite, sel_reg = zero, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 211: resolved aliases:  trace
-L0211@0020.traceState: reg_trace <= ss_disable_char, if true then traceChar else 'D'
+L0211@0020.traceState:  reg_trace <= ss_disable_char, if true then traceChar else 'D'
 
 Line 212: resolved aliases:  trace
-L0212@0021. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0212@0021.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 213: resolved aliases:  trace
-L0213@0022. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0111
+L0213@0022.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0111
 
 Line 214: resolved aliases:  trace
-L0214@0023. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0110
+L0214@0023.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0110
 
 Line 215: resolved aliases:  trace
-L0215@0024. reg_trace <= ss_disable_char, if true then traceChar else ' '
+L0215@0024.  reg_trace <= ss_disable_char, if true then traceChar else ' '
 
 Line 217: resolved aliases:  trace
-L0217@0025. reg_trace <= ss_disable_char, if true then traceChar else 'B'
+L0217@0025.  reg_trace <= ss_disable_char, if true then traceChar else 'B'
 
 Line 218: resolved aliases:  trace
-L0218@0026. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0218@0026.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 219: resolved aliases:  trace
-L0219@0027. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0101
+L0219@0027.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0101
 
 Line 220: resolved aliases:  trace
-L0220@0028. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0100
+L0220@0028.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0100
 
 Line 221: resolved aliases:  trace
-L0221@0029. reg_trace <= ss_disable_char, if true then traceChar else ' '
+L0221@0029.  reg_trace <= ss_disable_char, if true then traceChar else ' '
 
 Line 223: resolved aliases:  trace
-L0223@002A. reg_trace <= ss_disable_char, if true then traceChar else 'F'
+L0223@002A.  reg_trace <= ss_disable_char, if true then traceChar else 'F'
 
 Line 224: resolved aliases:  trace
-L0224@002B. reg_trace <= ss_disable_char, if true then traceChar else 'L'
+L0224@002B.  reg_trace <= ss_disable_char, if true then traceChar else 'L'
 
 Line 225: resolved aliases:  trace
-L0225@002C. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0225@002C.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 226: resolved aliases:  trace
-L0226@002D. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0011
+L0226@002D.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0011
 
 Line 227: resolved aliases:  trace
-L0227@002E. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0010
+L0227@002E.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_0010
 
 Line 228: resolved aliases:  trace
-L0228@002F. reg_trace <= ss_disable_char, if true then traceChar else ' '
+L0228@002F.  reg_trace <= ss_disable_char, if true then traceChar else ' '
 
 Line 230: resolved aliases:  trace
-L0230@0030. reg_trace <= ss_disable_char, if true then traceChar else 'X'
+L0230@0030.  reg_trace <= ss_disable_char, if true then traceChar else 'X'
 
 Line 231: resolved aliases:  trace
-L0231@0031. reg_trace <= ss_disable_char, if true then traceChar else 'P'
+L0231@0031.  reg_trace <= ss_disable_char, if true then traceChar else 'P'
 
 Line 232: resolved aliases:  trace
-L0232@0032. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0232@0032.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 233: resolved aliases:  trace
-L0233@0033. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1111
+L0233@0033.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1111
 
 Line 234: resolved aliases:  trace
-L0234@0034. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1110
+L0234@0034.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1110
 
 Line 235: resolved aliases:  trace
-L0235@0035. reg_trace <= ss_disable_char, if true then traceChar else ' '
+L0235@0035.  reg_trace <= ss_disable_char, if true then traceChar else ' '
 
 Line 237: resolved aliases:  trace
-L0237@0036. reg_trace <= ss_disable_char, if true then traceChar else 'I'
+L0237@0036.  reg_trace <= ss_disable_char, if true then traceChar else 'I'
 
 Line 238: resolved aliases:  trace
-L0238@0037. reg_trace <= ss_disable_char, if true then traceChar else 'N'
+L0238@0037.  reg_trace <= ss_disable_char, if true then traceChar else 'N'
 
 Line 239: resolved aliases:  trace
-L0239@0038. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0239@0038.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 240: resolved aliases:  trace
-L0240@0039. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1001
+L0240@0039.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1001
 
 Line 241: resolved aliases:  trace
-L0241@003A. reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1000
+L0241@003A.  reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1000
 
 Line 243: resolved aliases:  gosub
-L0243@003B. if false then next else traceSpR
+L0243@003B.  if false then next else traceSpR
 
 Line 244: resolved aliases:  gosub
-L0244@003C. if false then next else traceReg0
+L0244@003C.  if false then next else traceReg0
 
 Line 246: resolved aliases:  gosub
-L0246@003D. if false then next else traceSpR
+L0246@003D.  if false then next else traceSpR
 
 Line 247: resolved aliases:  gosub
-L0247@003E. if false then next else traceReg1
+L0247@003E.  if false then next else traceReg1
 
 Line 249: resolved aliases:  gosub
-L0249@003F. if false then next else traceSpR
+L0249@003F.  if false then next else traceSpR
 
 Line 250: resolved aliases:  gosub
-L0250@0040. if false then next else traceReg2
+L0250@0040.  if false then next else traceReg2
 
 Line 252: resolved aliases:  gosub
-L0252@0041. if false then next else traceSpR
+L0252@0041.  if false then next else traceSpR
 
 Line 253: resolved aliases:  gosub
-L0253@0042. if false then next else traceRegX
+L0253@0042.  if false then next else traceRegX
 
 Line 255: resolved aliases:  gosub
-L0255@0043. if false then next else traceSpR
+L0255@0043.  if false then next else traceSpR
 
 Line 256: resolved aliases:  gosub
-L0256@0044. if false then next else traceRegP
+L0256@0044.  if false then next else traceRegP
 
 Line 258: resolved aliases:  gosub
-L0258@0045. if false then next else traceSpR
+L0258@0045.  if false then next else traceSpR
 
 Line 259: resolved aliases:  gosub
-L0259@0046. if false then next else traceRegN
+L0259@0046.  if false then next else traceRegN
 
 Line 261: resolved aliases:  trace, CR
-L0261@0047. reg_trace <= ss_disable_char, if true then traceChar else 0x0D
+L0261@0047.  reg_trace <= ss_disable_char, if true then traceChar else 0x0D
 
 Line 262: resolved aliases:  trace, LF
-L0262@0048. reg_trace <= ss_disable_char, if true then traceChar else 0x0A
+L0262@0048.  reg_trace <= ss_disable_char, if true then traceChar else 0x0A
 
 Line 264: resolved aliases:  dispatch
-L0264@0049. reg_trace <= ss_enable_zero,if sync then fork else repeat
+L0264@0049.  reg_trace <= ss_enable_zero, if sync then fork else repeat
 
 Line 267: resolved aliases:  trace
-L0267@004A.traceReg0: reg_trace <= ss_disable_char, if true then traceChar else '0'
+L0267@004A.traceReg0:  reg_trace <= ss_disable_char, if true then traceChar else '0'
 
 Line 268: resolved aliases:  trace
-L0268@004B. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0268@004B.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 269: resolved aliases:  trace
-L0269@004C. sel_reg = zero, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
+L0269@004C.  sel_reg = zero, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
 
 Line 270: resolved aliases:  trace
-L0270@004D. sel_reg = zero, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
+L0270@004D.  sel_reg = zero, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
 
 Line 271: resolved aliases:  trace
-L0271@004E. sel_reg = zero, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
+L0271@004E.  sel_reg = zero, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
 
 Line 272: resolved aliases:  trace
-L0272@004F. sel_reg = zero, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
+L0272@004F.  sel_reg = zero, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
 
 Line 273: resolved aliases:  return
-L0273@0050. if false then next else return
+L0273@0050.  if false then next else return
 
 Line 275: resolved aliases:  trace
-L0275@0051.traceReg1: reg_trace <= ss_disable_char, if true then traceChar else '1'
+L0275@0051.traceReg1:  reg_trace <= ss_disable_char, if true then traceChar else '1'
 
 Line 276: resolved aliases:  trace
-L0276@0052. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0276@0052.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 277: resolved aliases:  trace
-L0277@0053. sel_reg = one, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
+L0277@0053.  sel_reg = one, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
 
 Line 278: resolved aliases:  trace
-L0278@0054. sel_reg = one, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
+L0278@0054.  sel_reg = one, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
 
 Line 279: resolved aliases:  trace
-L0279@0055. sel_reg = one, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
+L0279@0055.  sel_reg = one, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
 
 Line 280: resolved aliases:  trace
-L0280@0056. sel_reg = one, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
+L0280@0056.  sel_reg = one, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
 
 Line 281: resolved aliases:  return
-L0281@0057. if false then next else return
+L0281@0057.  if false then next else return
 
 Line 283: resolved aliases:  trace
-L0283@0058.traceReg2: reg_trace <= ss_disable_char, if true then traceChar else '2'
+L0283@0058.traceReg2:  reg_trace <= ss_disable_char, if true then traceChar else '2'
 
 Line 284: resolved aliases:  trace
-L0284@0059. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0284@0059.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 285: resolved aliases:  trace
-L0285@005A. sel_reg = two, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
+L0285@005A.  sel_reg = two, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
 
 Line 286: resolved aliases:  trace
-L0286@005B. sel_reg = two, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
+L0286@005B.  sel_reg = two, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
 
 Line 287: resolved aliases:  trace
-L0287@005C. sel_reg = two, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
+L0287@005C.  sel_reg = two, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
 
 Line 288: resolved aliases:  trace
-L0288@005D. sel_reg = two, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
+L0288@005D.  sel_reg = two, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
 
 Line 289: resolved aliases:  return
-L0289@005E. if false then next else return
+L0289@005E.  if false then next else return
 
 Line 291: resolved aliases:  trace
-L0291@005F.traceRegX: reg_trace <= ss_disable_char, if true then traceChar else 'X'
+L0291@005F.traceRegX:  reg_trace <= ss_disable_char, if true then traceChar else 'X'
 
 Line 292: resolved aliases:  trace
-L0292@0060. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0292@0060.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 293: resolved aliases:  trace
-L0293@0061. sel_reg = x, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
+L0293@0061.  sel_reg = x, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
 
 Line 294: resolved aliases:  trace
-L0294@0062. sel_reg = x, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
+L0294@0062.  sel_reg = x, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
 
 Line 295: resolved aliases:  trace
-L0295@0063. sel_reg = x, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
+L0295@0063.  sel_reg = x, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
 
 Line 296: resolved aliases:  trace
-L0296@0064. sel_reg = x, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
+L0296@0064.  sel_reg = x, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
 
 Line 297: resolved aliases:  return
-L0297@0065. if false then next else return
+L0297@0065.  if false then next else return
 
 Line 299: resolved aliases:  trace
-L0299@0066.traceRegP: reg_trace <= ss_disable_char, if true then traceChar else 'P'
+L0299@0066.traceRegP:  reg_trace <= ss_disable_char, if true then traceChar else 'P'
 
 Line 300: resolved aliases:  trace
-L0300@0067. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0300@0067.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 301: resolved aliases:  trace
-L0301@0068. sel_reg = p, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
+L0301@0068.  sel_reg = p, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
 
 Line 302: resolved aliases:  trace
-L0302@0069. sel_reg = p, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
+L0302@0069.  sel_reg = p, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
 
 Line 303: resolved aliases:  trace
-L0303@006A. sel_reg = p, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
+L0303@006A.  sel_reg = p, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
 
 Line 304: resolved aliases:  trace
-L0304@006B. sel_reg = p, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
+L0304@006B.  sel_reg = p, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
 
 Line 305: resolved aliases:  return
-L0305@006C. if false then next else return
+L0305@006C.  if false then next else return
 
 Line 307: resolved aliases:  trace
-L0307@006D.traceRegN: reg_trace <= ss_disable_char, if true then traceChar else 'N'
+L0307@006D.traceRegN:  reg_trace <= ss_disable_char, if true then traceChar else 'N'
 
 Line 308: resolved aliases:  trace
-L0308@006E. reg_trace <= ss_disable_char, if true then traceChar else '='
+L0308@006E.  reg_trace <= ss_disable_char, if true then traceChar else '='
 
 Line 309: resolved aliases:  trace
-L0309@006F. sel_reg = n, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
+L0309@006F.  sel_reg = n, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1101
 
 Line 310: resolved aliases:  trace
-L0310@0070. sel_reg = n, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
+L0310@0070.  sel_reg = n, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1100
 
 Line 311: resolved aliases:  trace
-L0311@0071. sel_reg = n, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
+L0311@0071.  sel_reg = n, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1011
 
 Line 312: resolved aliases:  trace
-L0312@0072. sel_reg = n, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
+L0312@0072.  sel_reg = n, reg_trace <= ss_disable_char, if true then traceChar else 0b1000_1010
 
 Line 313: resolved aliases:  return
-L0313@0073. if false then next else return
+L0313@0073.  if false then next else return
 
 Line 315: resolved aliases:  trace
-L0315@0074.traceSpR: reg_trace <= ss_disable_char, if true then traceChar else ' '
+L0315@0074.traceSpR:  reg_trace <= ss_disable_char, if true then traceChar else ' '
 
 Line 316: resolved aliases:  trace
-L0316@0075. reg_trace <= ss_disable_char, if true then traceChar else 'R'
+L0316@0075.  reg_trace <= ss_disable_char, if true then traceChar else 'R'
 
 Line 317: resolved aliases:  return
-L0317@0076. if false then next else return
+L0317@0076.  if false then next else return
 
 Line 320: resolved aliases:  return
-L0320@0078. reg_trace <= ss_disable_zero, if false then next else return
+L0320@0078.  reg_trace <= ss_disable_zero, if false then next else return
 
 Line 323: resolved aliases:  goto
-L0323@0079.XNOP: reg_extend <= zero, if false then next else NOP
+L0323@0079.XNOP:  reg_extend <= zero, if false then next else NOP
 
 Line 329: resolved aliases:  y_bus, exec_memread
-L0329@007A.LDN: bus_state = exec_memread, sel_reg = n, alu_f = pass_s, alu_s = bus, reg_d <= alu_y,if continue then fetch else dma_or_int
+L0329@007A.LDN:  bus_state = exec_memread, sel_reg = n, alu_f = pass_s, alu_s = bus, reg_d <= alu_y, if continue then fetch else dma_or_int
 
 Line 333: resolved aliases:  noop
-L0333@007B.IDL: if true then next else next
+L0333@007B.IDL:  if true then next else next
 
 Line 339: resolved aliases:  reg_inc
-L0339@007D.INC: sel_reg = n, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0339@007D.INC:  sel_reg = n, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 343: resolved aliases:  reg_dec
-L0343@007E.DEC: sel_reg = n, reg_r <= r_minus_one,if continue then fetch else dma_or_int
+L0343@007E.DEC:  sel_reg = n, reg_r <= r_minus_one, if continue then fetch else dma_or_int
 
 Line 347: resolved aliases:  y_bus, exec_memread
-L0347@007F.SBRANCH: bus_state = exec_memread, sel_reg = p, alu_f = pass_s, alu_s = bus, reg_b <= alu_y,if cond_3X then sbranch2 else next
+L0347@007F.SBRANCH:  bus_state = exec_memread, sel_reg = p, alu_f = pass_s, alu_s = bus, reg_b <= alu_y, if cond_3X then sbranch2 else next
 
 Line 351: resolved aliases:  reg_inc
-L0351@0080.SKIP: sel_reg = p, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0351@0080.SKIP:  sel_reg = p, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 354: resolved aliases:  y_b
-L0354@0081.sbranch2: sel_reg = p, reg_r <= rhi_ylo, alu_f = pass_r, alu_r = b,if continue then fetch else dma_or_int
+L0354@0081.sbranch2:  sel_reg = p, reg_r <= rhi_ylo, alu_f = pass_r, alu_r = b, if continue then fetch else dma_or_int
 
 Line 358: resolved aliases:  reg_inc, y_bus, exec_memread
-L0358@0082.LDA: bus_state = exec_memread, sel_reg = n, alu_f = pass_s, alu_s = bus, reg_d <= alu_y, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0358@0082.LDA:  bus_state = exec_memread, sel_reg = n, alu_f = pass_s, alu_s = bus, reg_d <= alu_y, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 362: resolved aliases:  y_d, exec_memwrite
-L0362@0083.STR: bus_state = exec_memwrite, sel_reg = n, alu_f = pass_r, alu_r = d,if continue then fetch else dma_or_int
+L0362@0083.STR:  bus_state = exec_memwrite, sel_reg = n, alu_f = pass_r, alu_r = d, if continue then fetch else dma_or_int
 
 Line 366: resolved aliases:  reg_inc, exec_iowrite
-L0366@0084.OUT: bus_state = exec_iowrite, sel_reg = x, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0366@0084.OUT:  bus_state = exec_iowrite, sel_reg = x, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 370: resolved aliases:  reg_inc
-L0370@0085.IRX: sel_reg = x, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0370@0085.IRX:  sel_reg = x, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 374: resolved aliases:  y_bus, exec_ioread
-L0374@0086.INP: bus_state = exec_ioread, sel_reg = x, alu_f = pass_s, alu_s = bus, reg_d <= alu_y,if continue then fetch else dma_or_int
+L0374@0086.INP:  bus_state = exec_ioread, sel_reg = x, alu_f = pass_s, alu_s = bus, reg_d <= alu_y, if continue then fetch else dma_or_int
 
 Line 380: resolved aliases:  goto, reg_inc, y_bus, fetch_memread
-L0380@0088. bus_state = fetch_memread, sel_reg = p, reg_in <= alu_y, alu_f = pass_s, alu_s = bus, reg_extend <= one,reg_r <= r_plus_one,if false then next else load_b
+L0380@0088.  bus_state = fetch_memread, sel_reg = p, reg_in <= alu_y, alu_f = pass_s, alu_s = bus, reg_extend <= one, reg_r <= r_plus_one, if false then next else load_b
 
 Line 385: resolved aliases:  reg_inc, y_b
-L0385@0089.RET: alu_f = pass_r, alu_r = b, reg_x <= alu_yhi, reg_p <= alu_ylo, reg_mie <= enable,sel_reg = x, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0385@0089.RET:  alu_f = pass_r, alu_r = b, reg_x <= alu_yhi, reg_p <= alu_ylo, reg_mie <= enable, sel_reg = x, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 390: resolved aliases:  reg_inc, y_b
-L0390@008A.DIS: alu_f = pass_r, alu_r = b, reg_x <= alu_yhi, reg_p <= alu_ylo, reg_mie <= disable,sel_reg = x, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0390@008A.DIS:  alu_f = pass_r, alu_r = b, reg_x <= alu_yhi, reg_p <= alu_ylo, reg_mie <= disable, sel_reg = x, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 395: resolved aliases:  y_b
-L0395@008B.LDXA: alu_f = pass_r, alu_r = b, reg_d <= alu_y
+L0395@008B.LDXA:  alu_f = pass_r, alu_r = b, reg_d <= alu_y
 
 Line 397: resolved aliases:  reg_inc
-L0397@008C. sel_reg = x, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0397@008C.  sel_reg = x, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 401: resolved aliases:  y_d, exec_memwrite
-L0401@008D.STXD: bus_state = exec_memwrite, alu_f = pass_r, alu_r = d, sel_reg = x
+L0401@008D.STXD:  bus_state = exec_memwrite, alu_f = pass_r, alu_r = d, sel_reg = x
 
 Line 403: resolved aliases:  reg_dec
-L0403@008E. sel_reg = x, reg_r <= r_minus_one,if continue then fetch else dma_or_int
+L0403@008E.  sel_reg = x, reg_r <= r_minus_one, if continue then fetch else dma_or_int
 
 Line 408: resolved aliases:  y_d_plus_b
-L0408@008F.ADC: reg_extend <= zero, reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_s, alu_r = b, alu_s = d, alu_cin = df,if continue then fetch else dma_or_int
+L0408@008F.ADC:  reg_extend <= zero, reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_s, alu_r = b, alu_s = d, alu_cin = df, if continue then fetch else dma_or_int
 
 Line 412: resolved aliases:  y_b_minus_d
-L0412@0090.SDB: reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_ns, alu_r = b, alu_s = d, alu_cin = df,if continue then fetch else dma_or_int
+L0412@0090.SDB:  reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_ns, alu_r = b, alu_s = d, alu_cin = df, if continue then fetch else dma_or_int
 
 Line 421: resolved aliases:  y_d_minus_b
-L0421@0092.SMB: reg_extend <= zero, reg_df <= alu_cout, reg_d <= alu_y, alu_f = nr_plus_s, alu_r = b, alu_s = d, alu_cin = df,if continue then fetch else dma_or_int
+L0421@0092.SMB:  reg_extend <= zero, reg_df <= alu_cout, reg_d <= alu_y, alu_f = nr_plus_s, alu_r = b, alu_s = d, alu_cin = df, if continue then fetch else dma_or_int
 
 Line 425: resolved aliases:  y_t, exec_memwrite
-L0425@0093.SAV: bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = t,if continue then fetch else dma_or_int
+L0425@0093.SAV:  bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = t, if continue then fetch else dma_or_int
 
 Line 431: resolved aliases:  reg_dec, y_t, exec_memwrite
-L0431@0095. bus_state = exec_memwrite, reg_x <= p, sel_reg = two, alu_f = pass_r, alu_r = t, reg_r <= r_minus_one,if continue then fetch else dma_or_int
+L0431@0095.  bus_state = exec_memwrite, reg_x <= p, sel_reg = two, alu_f = pass_r, alu_r = t, reg_r <= r_minus_one, if continue then fetch else dma_or_int
 
 Line 444: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0444@0098.ADCI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else ADC
+L0444@0098.ADCI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else ADC
 
 Line 448: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0448@0099.SDBI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else SDB
+L0448@0099.SDBI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else SDB
 
 Line 457: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0457@009B.SMBI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else SMB
+L0457@009B.SMBI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else SMB
 
 Line 461: resolved aliases:  y_lo
-L0461@009C.GLO: reg_d <= alu_y, alu_f = pass_s, alu_s = reg_lo, sel_reg = n,if continue then fetch else dma_or_int
+L0461@009C.GLO:  reg_d <= alu_y, alu_f = pass_s, alu_s = reg_lo, sel_reg = n, if continue then fetch else dma_or_int
 
 Line 465: resolved aliases:  y_hi
-L0465@009D.GHI: reg_d <= alu_y, alu_f = pass_r, alu_r = reg_hi, sel_reg = n,if continue then fetch else dma_or_int
+L0465@009D.GHI:  reg_d <= alu_y, alu_f = pass_r, alu_r = reg_hi, sel_reg = n, if continue then fetch else dma_or_int
 
 Line 469: resolved aliases:  y_d
-L0469@009E.PLO: reg_r <= rhi_ylo, alu_f = pass_r, alu_r = d, sel_reg = n,if continue then fetch else dma_or_int
+L0469@009E.PLO:  reg_r <= rhi_ylo, alu_f = pass_r, alu_r = d, sel_reg = n, if continue then fetch else dma_or_int
 
 Line 473: resolved aliases:  y_d
-L0473@009F.PHI: reg_r <= yhi_rlo, alu_f = pass_r, alu_r = d, sel_reg = n,if continue then fetch else dma_or_int
+L0473@009F.PHI:  reg_r <= yhi_rlo, alu_f = pass_r, alu_r = d, sel_reg = n, if continue then fetch else dma_or_int
 
 Line 477: resolved aliases:  reg_inc, y_bus, exec_memread
-L0477@00A0.LBRANCH: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if cond_CX then next else SKIP
+L0477@00A0.LBRANCH:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if cond_CX then next else SKIP
 
 Line 480: resolved aliases:  y_bus, exec_memread
-L0480@00A1. bus_state = exec_memread, sel_reg = p, reg_r <= rhi_ylo, alu_f = pass_s, alu_s = bus
+L0480@00A1.  bus_state = exec_memread, sel_reg = p, reg_r <= rhi_ylo, alu_f = pass_s, alu_s = bus
 
 Line 482: resolved aliases:  y_b
-L0482@00A2. sel_reg = p, reg_r <= yhi_rlo, alu_f = pass_r, alu_r = b,if continue then fetch else dma_or_int
+L0482@00A2.  sel_reg = p, reg_r <= yhi_rlo, alu_f = pass_r, alu_r = b, if continue then fetch else dma_or_int
 
 Line 495: resolved aliases:  goto, reg_inc
-L0495@00A4.SKIP2: sel_reg = p, reg_r <= r_plus_one,if false then next else SKIP
+L0495@00A4.SKIP2:  sel_reg = p, reg_r <= r_plus_one, if false then next else SKIP
 
 Line 510: resolved aliases:  y_b
-L0510@00A8.LDX: reg_d <= alu_y, alu_f = pass_r, alu_r = b,if continue then fetch else dma_or_int
+L0510@00A8.LDX:  reg_d <= alu_y, alu_f = pass_r, alu_r = b, if continue then fetch else dma_or_int
 
 Line 527: resolved aliases:  y_d_plus_b
-L0527@00AC.ADD: reg_extend <= zero, reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_s, alu_r = b, alu_s = d, alu_cin = f1_or_f0,if continue then fetch else dma_or_int
+L0527@00AC.ADD:  reg_extend <= zero, reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_s, alu_r = b, alu_s = d, alu_cin = f1_or_f0, if continue then fetch else dma_or_int
 
 Line 531: resolved aliases:  y_b_minus_d
-L0531@00AD.SD: reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_ns, alu_r = b, alu_s = d, alu_cin = f1_or_f0,if continue then fetch else dma_or_int
+L0531@00AD.SD:  reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_ns, alu_r = b, alu_s = d, alu_cin = f1_or_f0, if continue then fetch else dma_or_int
 
 Line 540: resolved aliases:  y_d_minus_b
-L0540@00AF.SM: reg_extend <= zero, reg_df <= alu_cout, reg_d <= alu_y, alu_f = nr_plus_s, alu_r = b, alu_s = d, alu_cin = f1_or_f0,if continue then fetch else dma_or_int
+L0540@00AF.SM:  reg_extend <= zero, reg_df <= alu_cout, reg_d <= alu_y, alu_f = nr_plus_s, alu_r = b, alu_s = d, alu_cin = f1_or_f0, if continue then fetch else dma_or_int
 
 Line 544: resolved aliases:  reg_inc, y_bus, exec_memread
-L0544@00B0.LDI: bus_state = exec_memread, sel_reg = p, reg_d <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if continue then fetch else dma_or_int
+L0544@00B0.LDI:  bus_state = exec_memread, sel_reg = p, reg_d <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if continue then fetch else dma_or_int
 
 Line 548: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0548@00B1.ORI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else OR
+L0548@00B1.ORI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else OR
 
 Line 552: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0552@00B2.ANI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else AND
+L0552@00B2.ANI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else AND
 
 Line 556: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0556@00B3.XRI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else XOR
+L0556@00B3.XRI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else XOR
 
 Line 561: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0561@00B4.ADI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else ADD
+L0561@00B4.ADI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else ADD
 
 Line 565: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0565@00B5.SDI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else SD
+L0565@00B5.SDI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else SD
 
 Line 569: resolved aliases:  y_d_plus_d
-L0569@00B6.SHL: reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_s, alu_r = d, alu_s = d, alu_cin = f1_or_f0,if continue then fetch else dma_or_int
+L0569@00B6.SHL:  reg_df <= alu_cout, reg_d <= alu_y, alu_f = r_plus_s, alu_r = d, alu_s = d, alu_cin = f1_or_f0, if continue then fetch else dma_or_int
 
 Line 574: resolved aliases:  goto, reg_inc, y_bus, exec_memread
-L0574@00B7.SMI: bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one,if false then next else SM
+L0574@00B7.SMI:  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one, if false then next else SM
 
 Line 637: resolved aliases:  reg_dec
-L0637@00C6.DBNZ: reg_extend <= zero, sel_reg = n, reg_r <= r_minus_one,if alu16_zero then skip2 else next
+L0637@00C6.DBNZ:  reg_extend <= zero, sel_reg = n, reg_r <= r_minus_one, if alu16_zero then skip2 else next
 
 Line 640: resolved aliases:  reg_inc, y_bus, exec_memread
-L0640@00C7. bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0640@00C7.  bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Line 642: resolved aliases:  y_bus, exec_memread
-L0642@00C8. bus_state = exec_memread, sel_reg = p, reg_r <= rhi_ylo, alu_f = pass_s, alu_s = bus
+L0642@00C8.  bus_state = exec_memread, sel_reg = p, reg_r <= rhi_ylo, alu_f = pass_s, alu_s = bus
 
 Line 644: resolved aliases:  y_b
-L0644@00C9. sel_reg = p, reg_r <= yhi_rlo, alu_f = pass_r, alu_r = b,if continue then fetch else dma_or_int
+L0644@00C9.  sel_reg = p, reg_r <= yhi_rlo, alu_f = pass_r, alu_r = b, if continue then fetch else dma_or_int
 
 Line 647: resolved aliases:  goto, reg_inc
-L0647@00CA.skip2: sel_reg = p, reg_r <= r_plus_one,if false then next else SKIP
+L0647@00CA.skip2:  sel_reg = p, reg_r <= r_plus_one, if false then next else SKIP
 
 Line 651: resolved aliases:  y_bus, exec_memread
-L0651@00CB.BCI: reg_extend <= zero, bus_state = exec_memread, sel_reg = p, alu_f = pass_s, alu_s = bus, reg_b <= alu_y,if counterInt then sbranch2 else SKIP
+L0651@00CB.BCI:  reg_extend <= zero, bus_state = exec_memread, sel_reg = p, alu_f = pass_s, alu_s = bus, reg_b <= alu_y, if counterInt then sbranch2 else SKIP
 
 Line 655: resolved aliases:  y_bus, exec_memread
-L0655@00CC.BXI: reg_extend <= zero, bus_state = exec_memread, sel_reg = p, alu_f = pass_s, alu_s = bus, reg_b <= alu_y,if externalInt then sbranch2 else SKIP
+L0655@00CC.BXI:  reg_extend <= zero, bus_state = exec_memread, sel_reg = p, alu_f = pass_s, alu_s = bus, reg_b <= alu_y, if externalInt then sbranch2 else SKIP
 
 Line 659: resolved aliases:  reg_inc, y_bus, exec_memread
-L0659@00CD.RLXA: reg_extend <= zero, bus_state = exec_memread, sel_reg = x, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0659@00CD.RLXA:  reg_extend <= zero, bus_state = exec_memread, sel_reg = x, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Line 661: resolved aliases:  reg_inc, y_bus, exec_memread
-L0661@00CE. bus_state = exec_memread, sel_reg = x, reg_t <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0661@00CE.  bus_state = exec_memread, sel_reg = x, reg_t <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Line 663: resolved aliases:  y_b
-L0663@00CF. sel_reg = n, reg_r <= yhi_rlo, alu_f = pass_r, alu_r = b, reg_b <= t
+L0663@00CF.  sel_reg = n, reg_r <= yhi_rlo, alu_f = pass_r, alu_r = b, reg_b <= t
 
 Line 665: resolved aliases:  y_b
-L0665@00D0. sel_reg = n, reg_r <= rhi_ylo, alu_f = pass_r, alu_r = b,if continue then fetch else dma_or_int
+L0665@00D0.  sel_reg = n, reg_r <= rhi_ylo, alu_f = pass_r, alu_r = b, if continue then fetch else dma_or_int
 
 Line 669: resolved aliases:  reg_dec
-L0669@00D1.DSAV: reg_extend <= zero, sel_reg = x, reg_r <= r_minus_one
+L0669@00D1.DSAV:  reg_extend <= zero, sel_reg = x, reg_r <= r_minus_one
 
 Line 671: resolved aliases:  reg_dec, y_t, exec_memwrite
-L0671@00D2. bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = t, reg_r <= r_minus_one
+L0671@00D2.  bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = t, reg_r <= r_minus_one
 
 Line 673: resolved aliases:  reg_dec, y_d, exec_memwrite
-L0673@00D3. bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = d, reg_r <= r_minus_one, reg_b <= df_d_dn
+L0673@00D3.  bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = d, reg_r <= r_minus_one, reg_b <= df_d_dn
 
 Line 675: resolved aliases:  reg_dec, y_b, exec_memwrite
-L0675@00D4. bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = b, reg_r <= r_minus_one,if continue then fetch else dma_or_int
+L0675@00D4.  bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = b, reg_r <= r_minus_one, if continue then fetch else dma_or_int
 
 Line 679: resolved aliases:  y_lo
-L0679@00D5.SCAL: reg_extend <= zero, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
+L0679@00D5.SCAL:  reg_extend <= zero, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
 
 Line 681: resolved aliases:  y_hi
-L0681@00D6. sel_reg = n, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
+L0681@00D6.  sel_reg = n, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
 
 Line 683: resolved aliases:  reg_dec, y_t, exec_memwrite
-L0683@00D7. bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = t, reg_r <= r_minus_one
+L0683@00D7.  bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = t, reg_r <= r_minus_one
 
 Line 685: resolved aliases:  reg_dec, y_b, exec_memwrite
-L0685@00D8. bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = b, reg_r <= r_minus_one
+L0685@00D8.  bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = b, reg_r <= r_minus_one
 
 Line 687: resolved aliases:  y_lo
-L0687@00D9. sel_reg = p, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
+L0687@00D9.  sel_reg = p, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
 
 Line 689: resolved aliases:  y_hi
-L0689@00DA. sel_reg = p, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
+L0689@00DA.  sel_reg = p, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
 
 Line 693: resolved aliases:  reg_inc, y_bus, exec_memread
-L0693@00DC. bus_state = exec_memread, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0693@00DC.  bus_state = exec_memread, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Line 695: resolved aliases:  reg_inc, y_bus, exec_memread
-L0695@00DD. bus_state = exec_memread, sel_reg = n, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0695@00DD.  bus_state = exec_memread, sel_reg = n, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Line 701: resolved aliases:  y_lo
-L0701@00DF.SRET: reg_extend <= zero, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
+L0701@00DF.SRET:  reg_extend <= zero, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
 
 Line 703: resolved aliases:  y_hi
-L0703@00E0. sel_reg = n, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
+L0703@00E0.  sel_reg = n, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
 
 Line 705: resolved aliases:  reg_inc
-L0705@00E1. sel_reg = x, reg_r <= r_plus_one
+L0705@00E1.  sel_reg = x, reg_r <= r_plus_one
 
 Line 709: resolved aliases:  reg_inc, y_bus, exec_memread
-L0709@00E3. bus_state = exec_memread, sel_reg = x, reg_t <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0709@00E3.  bus_state = exec_memread, sel_reg = x, reg_t <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Line 711: resolved aliases:  goto, y_bus, exec_memread
-L0711@00E4. bus_state = exec_memread, sel_reg = x, reg_b <= alu_y, alu_f = pass_s, alu_s = bus,if false then next else load_n
+L0711@00E4.  bus_state = exec_memread, sel_reg = x, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, if false then next else load_n
 
 Line 715: resolved aliases:  y_lo
-L0715@00E5.RSXD: reg_extend <= zero, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
+L0715@00E5.RSXD:  reg_extend <= zero, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
 
 Line 717: resolved aliases:  y_hi
-L0717@00E6. sel_reg = n, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
+L0717@00E6.  sel_reg = n, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
 
 Line 719: resolved aliases:  reg_dec, y_t, exec_memwrite
-L0719@00E7. bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = t, reg_r <= r_minus_one
+L0719@00E7.  bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = t, reg_r <= r_minus_one
 
 Line 721: resolved aliases:  reg_dec, y_b, exec_memwrite
-L0721@00E8. bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = b, reg_r <= r_minus_one,if continue then fetch else dma_or_int
+L0721@00E8.  bus_state = exec_memwrite, sel_reg = x, alu_f = pass_r, alu_r = b, reg_r <= r_minus_one, if continue then fetch else dma_or_int
 
 Line 725: resolved aliases:  y_lo
-L0725@00E9.RNX: reg_extend <= zero, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
+L0725@00E9.RNX:  reg_extend <= zero, sel_reg = n, reg_t <= alu_y, alu_f = pass_s, alu_s = reg_lo
 
 Line 727: resolved aliases:  y_hi
-L0727@00EA. sel_reg = n, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
+L0727@00EA.  sel_reg = n, reg_b <= alu_y, alu_f = pass_r, alu_r = reg_hi
 
 Line 733: resolved aliases:  reg_inc, y_bus, exec_memread
-L0733@00EC.RLDI: reg_extend <= zero, bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0733@00EC.RLDI:  reg_extend <= zero, bus_state = exec_memread, sel_reg = p, reg_b <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Line 735: resolved aliases:  reg_inc, y_bus, exec_memread
-L0735@00ED. bus_state = exec_memread, sel_reg = p, reg_t <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
+L0735@00ED.  bus_state = exec_memread, sel_reg = p, reg_t <= alu_y, alu_f = pass_s, alu_s = bus, reg_r <= r_plus_one
 
 Success: pass 1 739 line(s) read, 381 statement(s) parsed.
 Compiling cdp180X.mcc, pass 2 out of 2.
@@ -1477,13 +1477,11 @@ Warning in line 5: found 34 uninitialized locations:
 
 Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_code.mif' ... Done.
 Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_code.cgf' ... Done.
-Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_code.coe' ... Done (initialized locations: 222, empty locations: 34, total locations: 256).
+Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_code.coe' (LF only) ... Done (initialized locations: 222, empty locations: 34, total locations: 256).
 Generating code 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_code.vhd' ... Done.
 Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_code.hex' ... Done.
 Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_code_lendian.bin' ... Done.
 Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_code_bendian.bin' ... Done.
 Generating mapping: 
 Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_map.mif' ... Done.
-Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_map.cgf' ... Done.
-Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_map.coe' ... Done (initialized locations: 512, empty locations: 0, total locations: 512).
-Generating mapper 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_map.vhd' ... Done.
+Writing 'C:\Users\zoltanp\Documents\HexCalc\Sys_180X\CDP180X\cdp180x_map.cgf' ... 
