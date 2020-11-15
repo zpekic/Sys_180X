@@ -1,5 +1,5 @@
 --------------------------------------------------------
--- mcc V0.9.0627 - Custom microcode compiler (c)2020-... 
+-- mcc V0.9.1114 - Custom microcode compiler (c)2020-... 
 --    https://github.com/zpekic/MicroCodeCompiler
 --------------------------------------------------------
 -- Auto-generated file, do not modify. To customize, create 'code_template.vhd' file in mcc.exe folder
@@ -23,16 +23,23 @@ type tty_code_memory is array(0 to 63) of std_logic_vector(31 downto 0);
 signal tty_uinstruction: std_logic_vector(31 downto 0);
 
 --
--- L0009.ready: 2 valuesno,char_is_zero,yes,- default no
+-- L0009.ready: .valfield 2 values no, char_is_zero, yes, - default no
 --
 alias tty_ready: 	std_logic_vector(1 downto 0) is tty_uinstruction(31 downto 30);
 constant ready_no: 	std_logic_vector(1 downto 0) := "00";
 constant ready_char_is_zero: 	std_logic_vector(1 downto 0) := "01";
 constant ready_yes: 	std_logic_vector(1 downto 0) := "10";
 -- Value "11" not allowed (name '-' is not assignable)
+---- Start boilerplate code (use with utmost caution!)
+-- with tty_ready select ready <=
+--      no when tty_no, -- default value
+--      char_is_zero when tty_char_is_zero,
+--      yes when tty_yes,
+--      null when others;
+---- End boilerplate code
 
 --
--- L0015.seq_cond: 3 valuestrue,char_is_zero,cursorx_ge_maxcol,cursory_ge_maxrow,cursorx_is_zero,cursory_is_zero,memory_ready,falsedefault true
+-- L0015.seq_cond: .if 3 values true, char_is_zero, cursorx_ge_maxcol, cursory_ge_maxrow, cursorx_is_zero, cursory_is_zero, memory_ready, false default true
 --
 alias tty_seq_cond: 	std_logic_vector(2 downto 0) is tty_uinstruction(29 downto 27);
 constant seq_cond_true: 	integer := 0;
@@ -43,9 +50,20 @@ constant seq_cond_cursorx_is_zero: 	integer := 4;
 constant seq_cond_cursory_is_zero: 	integer := 5;
 constant seq_cond_memory_ready: 	integer := 6;
 constant seq_cond_false: 	integer := 7;
+---- Start boilerplate code (use with utmost caution!)
+---- include '.controller <filename.vhd>, <stackdepth>;' in .mcc file to generate pre-canned microcode control unit and feed 'conditions' with:
+--  cond(seq_cond_true) => '1',
+--  cond(seq_cond_char_is_zero) => char_is_zero,
+--  cond(seq_cond_cursorx_ge_maxcol) => cursorx_ge_maxcol,
+--  cond(seq_cond_cursory_ge_maxrow) => cursory_ge_maxrow,
+--  cond(seq_cond_cursorx_is_zero) => cursorx_is_zero,
+--  cond(seq_cond_cursory_is_zero) => cursory_is_zero,
+--  cond(seq_cond_memory_ready) => memory_ready,
+--  cond(seq_cond_false) => '0',
+---- End boilerplate code
 
 --
--- L0025.seq_then: 6 values next, repeat, return, fork, @ default next
+-- L0025.seq_then: .then 6 values next, repeat, return, fork, @ default next
 --
 alias tty_seq_then: 	std_logic_vector(5 downto 0) is tty_uinstruction(26 downto 21);
 constant seq_then_next: 	std_logic_vector(5 downto 0) := "000000";
@@ -53,9 +71,10 @@ constant seq_then_repeat: 	std_logic_vector(5 downto 0) := "000001";
 constant seq_then_return: 	std_logic_vector(5 downto 0) := "000010";
 constant seq_then_fork: 	std_logic_vector(5 downto 0) := "000011";
 -- Jump targets allowed!
+-- include '.controller <filename.vhd>, <stackdepth>;' in .mcc file to generate pre-canned microcode control unit and connect 'then' to tty_seq_then
 
 --
--- L0026.seq_else: 6 values next, repeat, return, fork, 0x00..0x3F, @ default next
+-- L0026.seq_else: .else 6 values next, repeat, return, fork, 0x00..0x3F, @ default next
 --
 alias tty_seq_else: 	std_logic_vector(5 downto 0) is tty_uinstruction(20 downto 15);
 constant seq_else_next: 	std_logic_vector(5 downto 0) := "000000";
@@ -64,9 +83,10 @@ constant seq_else_return: 	std_logic_vector(5 downto 0) := "000010";
 constant seq_else_fork: 	std_logic_vector(5 downto 0) := "000011";
 -- Values from "000000" to "111111" allowed
 -- Jump targets allowed!
+-- include '.controller <filename.vhd>, <stackdepth>;' in .mcc file to generate pre-canned microcode control unit and connect 'else' to tty_seq_else
 
 --
--- L0028.cursorx: 3 values same, zero, inc, dec, maxcol default same
+-- L0028.cursorx: .regfield 3 values same, zero, inc, dec, maxcol default same
 --
 alias tty_cursorx: 	std_logic_vector(2 downto 0) is tty_uinstruction(14 downto 12);
 constant cursorx_same: 	std_logic_vector(2 downto 0) := "000";
@@ -74,9 +94,30 @@ constant cursorx_zero: 	std_logic_vector(2 downto 0) := "001";
 constant cursorx_inc: 	std_logic_vector(2 downto 0) := "010";
 constant cursorx_dec: 	std_logic_vector(2 downto 0) := "011";
 constant cursorx_maxcol: 	std_logic_vector(2 downto 0) := "100";
+---- Start boilerplate code (use with utmost caution!)
+-- update_cursorx: process(clk, tty_cursorx)
+-- begin
+--	if (rising_edge(clk)) then
+--		case tty_cursorx is
+----			when cursorx_same =>
+----				cursorx <= cursorx;
+--			when cursorx_zero =>
+--				cursorx <= (others => '0');
+--			when cursorx_inc =>
+--				cursorx <= std_logic_vector(unsigned(cursorx) + 1);
+--			when cursorx_dec =>
+--				cursorx <= std_logic_vector(unsigned(cursorx) - 1);
+--			when cursorx_maxcol =>
+--				cursorx <= maxcol;
+--			when others =>
+--				null;
+--		end case;
+-- end;
+-- end process;
+---- End boilerplate code
 
 --
--- L0030.cursory: 3 values same, zero, inc, dec, maxrow default same
+-- L0030.cursory: .regfield 3 values same, zero, inc, dec, maxrow default same
 --
 alias tty_cursory: 	std_logic_vector(2 downto 0) is tty_uinstruction(11 downto 9);
 constant cursory_same: 	std_logic_vector(2 downto 0) := "000";
@@ -84,213 +125,289 @@ constant cursory_zero: 	std_logic_vector(2 downto 0) := "001";
 constant cursory_inc: 	std_logic_vector(2 downto 0) := "010";
 constant cursory_dec: 	std_logic_vector(2 downto 0) := "011";
 constant cursory_maxrow: 	std_logic_vector(2 downto 0) := "100";
+---- Start boilerplate code (use with utmost caution!)
+-- update_cursory: process(clk, tty_cursory)
+-- begin
+--	if (rising_edge(clk)) then
+--		case tty_cursory is
+----			when cursory_same =>
+----				cursory <= cursory;
+--			when cursory_zero =>
+--				cursory <= (others => '0');
+--			when cursory_inc =>
+--				cursory <= std_logic_vector(unsigned(cursory) + 1);
+--			when cursory_dec =>
+--				cursory <= std_logic_vector(unsigned(cursory) - 1);
+--			when cursory_maxrow =>
+--				cursory <= maxrow;
+--			when others =>
+--				null;
+--		end case;
+-- end;
+-- end process;
+---- End boilerplate code
 
 --
--- L0032.data: 2 values same, char, memory, space default same
+-- L0032.data: .regfield 2 values same, char, memory, space default same
 --
 alias tty_data: 	std_logic_vector(1 downto 0) is tty_uinstruction(8 downto 7);
 constant data_same: 	std_logic_vector(1 downto 0) := "00";
 constant data_char: 	std_logic_vector(1 downto 0) := "01";
 constant data_memory: 	std_logic_vector(1 downto 0) := "10";
 constant data_space: 	std_logic_vector(1 downto 0) := "11";
+---- Start boilerplate code (use with utmost caution!)
+-- update_data: process(clk, tty_data)
+-- begin
+--	if (rising_edge(clk)) then
+--		case tty_data is
+----			when data_same =>
+----				data <= data;
+--			when data_char =>
+--				data <= char;
+--			when data_memory =>
+--				data <= memory;
+--			when data_space =>
+--				data <= space;
+--			when others =>
+--				null;
+--		end case;
+-- end;
+-- end process;
+---- End boilerplate code
 
 --
--- L0034.mem: 2 valuesnop,read,write,-default nop
+-- L0034.mem: .valfield 2 values nop, read, write, - default nop
 --
 alias tty_mem: 	std_logic_vector(1 downto 0) is tty_uinstruction(6 downto 5);
 constant mem_nop: 	std_logic_vector(1 downto 0) := "00";
 constant mem_read: 	std_logic_vector(1 downto 0) := "01";
 constant mem_write: 	std_logic_vector(1 downto 0) := "10";
 -- Value "11" not allowed (name '-' is not assignable)
+---- Start boilerplate code (use with utmost caution!)
+-- with tty_mem select mem <=
+--      nop when tty_nop, -- default value
+--      read when tty_read,
+--      write when tty_write,
+--      null when others;
+---- End boilerplate code
 
 --
--- L0041.xsel: 1 values cursorx, altx default cursorx
+-- L0041.xsel: .valfield 1 values cursorx, altx default cursorx
 --
 alias tty_xsel: 	std_logic is tty_uinstruction(4);
 constant xsel_cursorx: 	std_logic := '0';
 constant xsel_altx: 	std_logic := '1';
+---- Start boilerplate code (use with utmost caution!)
+--	xsel <= altx when (tty_xsel = xsel_altx) else cursorx;
+---- End boilerplate code
 
 --
--- L0043.ysel: 1 values cursory, alty default cursory
+-- L0043.ysel: .valfield 1 values cursory, alty default cursory
 --
 alias tty_ysel: 	std_logic is tty_uinstruction(3);
 constant ysel_cursory: 	std_logic := '0';
 constant ysel_alty: 	std_logic := '1';
+---- Start boilerplate code (use with utmost caution!)
+--	ysel <= alty when (tty_ysel = ysel_alty) else cursory;
+---- End boilerplate code
 
 --
--- L0045.altx: 1 values same, cursorx default same
+-- L0045.altx: .regfield 1 values same, cursorx default same
 --
 alias tty_altx: 	std_logic is tty_uinstruction(2);
 constant altx_same: 	std_logic := '0';
 constant altx_cursorx: 	std_logic := '1';
+---- Start boilerplate code (use with utmost caution!)
+-- update_altx: process(clk, tty_altx)
+-- begin
+--	if (rising_edge(clk)) then
+--	    if (tty_altx = altx_cursorx) then
+--		    altx <= cursorx;
+--	    end if;
+-- end;
+-- end process;
+---- End boilerplate code
 
 --
--- L0047.alty: 1 values same, cursory default same
+-- L0047.alty: .regfield 1 values same, cursory default same
 --
 alias tty_alty: 	std_logic is tty_uinstruction(1);
 constant alty_same: 	std_logic := '0';
 constant alty_cursory: 	std_logic := '1';
+---- Start boilerplate code (use with utmost caution!)
+-- update_alty: process(clk, tty_alty)
+-- begin
+--	if (rising_edge(clk)) then
+--	    if (tty_alty = alty_cursory) then
+--		    alty <= cursory;
+--	    end if;
+-- end;
+-- end process;
+---- End boilerplate code
 
 --
--- L0049.reserved: 1 values -, - default 0
+-- L0049.reserved: .valfield 1 values -, - default 0
 --
 alias tty_reserved: 	std_logic is tty_uinstruction(0);
 -- Value '0' not allowed (name '-' is not assignable)
 -- Value '1' not allowed (name '-' is not assignable)
+---- Start boilerplate code (use with utmost caution!)
+--	reserved <= - when (tty_reserved = reserved_-) else -;
+---- End boilerplate code
 
 
 
 constant tty_microcode: tty_code_memory := (
 
--- L0060@0000._reset: cursorx <= zero, cursory <= zero
+-- L0060@0000._reset:  cursorx <= zero, cursory <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 001, cursory <= 001, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 0 => "00" & O"0" & O"00" & O"00" & O"1" & O"1" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0062@0001._reset1: cursorx <= zero, cursory <= zero
+-- L0062@0001._reset1:  cursorx <= zero, cursory <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 001, cursory <= 001, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 1 => "00" & O"0" & O"00" & O"00" & O"1" & O"1" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0064@0002._reset2: cursorx <= zero, cursory <= zero
+-- L0064@0002._reset2:  cursorx <= zero, cursory <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 001, cursory <= 001, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 2 => "00" & O"0" & O"00" & O"00" & O"1" & O"1" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0066@0003._reset3: cursorx <= zero, cursory <= zero
+-- L0066@0003._reset3:  cursorx <= zero, cursory <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 001, cursory <= 001, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 3 => "00" & O"0" & O"00" & O"00" & O"1" & O"1" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0068@0004.waitChar: ready = char_is_zero, data <= char,if char_is_zero then repeat else next
+-- L0068@0004.waitChar:  ready = char_is_zero, data <= char, if char_is_zero then repeat else next
 --  ready = 01, if (001) then 000001 else 000000, cursorx <= 000, cursory <= 000, data <= 01, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 4 => "01" & O"1" & O"01" & O"00" & O"0" & O"0" & "01" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0071@0005. if true then fork else fork
+-- L0071@0005.  if true then fork else fork
 --  ready = 00, if (000) then 000011 else 000011, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 5 => "00" & O"0" & O"03" & O"03" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0075@0006.main: if false then next else printChar
+-- L0075@0006.main:  if false then next else printChar
 --  ready = 00, if (111) then 000000 else 100010, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 6 => "00" & O"7" & O"00" & O"42" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0077@0007. cursorx <= inc
+-- L0077@0007.  cursorx <= inc
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 010, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 7 => "00" & O"0" & O"00" & O"00" & O"2" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0079@0008. if cursorx_ge_maxcol then next else nextChar
+-- L0079@0008.  if cursorx_ge_maxcol then next else nextChar
 --  ready = 00, if (010) then 000000 else 001010, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 8 => "00" & O"2" & O"00" & O"12" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0081@0009. cursorx <= zero,if false then next else LF
+-- L0081@0009.  cursorx <= zero, if false then next else LF
 --  ready = 00, if (111) then 000000 else 010011, cursorx <= 001, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 9 => "00" & O"7" & O"00" & O"23" & O"1" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0085@000A.nextChar: ready = yes,if char_is_zero then waitChar else repeat
+-- L0085@000A.nextChar:  ready = yes, if char_is_zero then waitChar else repeat
 --  ready = 10, if (001) then 000100 else 000001, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 10 => "10" & O"1" & O"04" & O"01" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0089@000B.CLS: data <= space, cursory <= zero
+-- L0089@000B.CLS:  data <= space, cursory <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 000, cursory <= 001, data <= 11, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 11 => "00" & O"0" & O"00" & O"00" & O"0" & O"1" & "11" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0091@000C.nextRow: cursorx <= zero
+-- L0091@000C.nextRow:  cursorx <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 001, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 12 => "00" & O"0" & O"00" & O"00" & O"1" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0093@000D.nextCol: if false then next else printChar
+-- L0093@000D.nextCol:  if false then next else printChar
 --  ready = 00, if (111) then 000000 else 100010, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 13 => "00" & O"7" & O"00" & O"42" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0095@000E. cursorx <= inc
+-- L0095@000E.  cursorx <= inc
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 010, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 14 => "00" & O"0" & O"00" & O"00" & O"2" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0097@000F. if cursorx_ge_maxcol then next else nextCol
+-- L0097@000F.  if cursorx_ge_maxcol then next else nextCol
 --  ready = 00, if (010) then 000000 else 001101, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 15 => "00" & O"2" & O"00" & O"15" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0099@0010. cursory <= inc
+-- L0099@0010.  cursory <= inc
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 000, cursory <= 010, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 16 => "00" & O"0" & O"00" & O"00" & O"0" & O"2" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0101@0011. if cursory_ge_maxrow then HOME else nextRow
+-- L0101@0011.  if cursory_ge_maxrow then HOME else nextRow
 --  ready = 00, if (011) then 010010 else 001100, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 17 => "00" & O"3" & O"22" & O"14" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0104@0012.HOME: cursorx <= zero, cursory <= zero,if false then next else nextChar
+-- L0104@0012.HOME:  cursorx <= zero, cursory <= zero, if false then next else nextChar
 --  ready = 00, if (111) then 000000 else 001010, cursorx <= 001, cursory <= 001, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 18 => "00" & O"7" & O"00" & O"12" & O"1" & O"1" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0108@0013.LF: cursory <= inc
+-- L0108@0013.LF:  cursory <= inc
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 000, cursory <= 010, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 19 => "00" & O"0" & O"00" & O"00" & O"0" & O"2" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0110@0014. if cursory_ge_maxrow then next else nextChar
+-- L0110@0014.  if cursory_ge_maxrow then next else nextChar
 --  ready = 00, if (011) then 000000 else 001010, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 20 => "00" & O"3" & O"00" & O"12" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0112@0015.scrollUp: cursory <= zero
+-- L0112@0015.scrollUp:  cursory <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 000, cursory <= 001, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 21 => "00" & O"0" & O"00" & O"00" & O"0" & O"1" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0114@0016.copyRow: if cursory_ge_maxrow then lastLine else next
+-- L0114@0016.copyRow:  if cursory_ge_maxrow then lastLine else next
 --  ready = 00, if (011) then 011101 else 000000, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 22 => "00" & O"3" & O"35" & O"00" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0116@0017. cursorx <= zero
+-- L0116@0017.  cursorx <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 001, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 23 => "00" & O"0" & O"00" & O"00" & O"1" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0118@0018.copyCol: if cursorx_ge_maxcol then nextY else next
+-- L0118@0018.copyCol:  if cursorx_ge_maxcol then nextY else next
 --  ready = 00, if (010) then 011100 else 000000, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 24 => "00" & O"2" & O"34" & O"00" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0120@0019. cursory <= inc,if false then next else readMem
+-- L0120@0019.  cursory <= inc, if false then next else readMem
 --  ready = 00, if (111) then 000000 else 100100, cursorx <= 000, cursory <= 010, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 25 => "00" & O"7" & O"00" & O"44" & O"0" & O"2" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0123@001A. cursory <= dec,if false then next else printChar
+-- L0123@001A.  cursory <= dec, if false then next else printChar
 --  ready = 00, if (111) then 000000 else 100010, cursorx <= 000, cursory <= 011, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 26 => "00" & O"7" & O"00" & O"42" & O"0" & O"3" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0126@001B. cursorx <= inc,if false then next else copyCol
+-- L0126@001B.  cursorx <= inc, if false then next else copyCol
 --  ready = 00, if (111) then 000000 else 011000, cursorx <= 010, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 27 => "00" & O"7" & O"00" & O"30" & O"2" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0129@001C.nextY: cursory <= inc,if false then next else copyRow
+-- L0129@001C.nextY:  cursory <= inc, if false then next else copyRow
 --  ready = 00, if (111) then 000000 else 010110, cursorx <= 000, cursory <= 010, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 28 => "00" & O"7" & O"00" & O"26" & O"0" & O"2" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0132@001D.lastLine: data <= space, cursory <= dec, cursorx <= zero
+-- L0132@001D.lastLine:  data <= space, cursory <= dec, cursorx <= zero
 --  ready = 00, if (000) then 000000 else 000000, cursorx <= 001, cursory <= 011, data <= 11, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 29 => "00" & O"0" & O"00" & O"00" & O"1" & O"3" & "11" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0134@001E.clearCol: if cursorx_ge_maxcol then CR else next
+-- L0134@001E.clearCol:  if cursorx_ge_maxcol then CR else next
 --  ready = 00, if (010) then 100001 else 000000, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 30 => "00" & O"2" & O"41" & O"00" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0136@001F. if false then next else printChar
+-- L0136@001F.  if false then next else printChar
 --  ready = 00, if (111) then 000000 else 100010, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 31 => "00" & O"7" & O"00" & O"42" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0138@0020. cursorx <= inc,if false then next else clearCol
+-- L0138@0020.  cursorx <= inc, if false then next else clearCol
 --  ready = 00, if (111) then 000000 else 011110, cursorx <= 010, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 32 => "00" & O"7" & O"00" & O"36" & O"2" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0142@0021.CR: cursorx <= zero,if false then next else nextChar
+-- L0142@0021.CR:  cursorx <= zero, if false then next else nextChar
 --  ready = 00, if (111) then 000000 else 001010, cursorx <= 001, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 33 => "00" & O"7" & O"00" & O"12" & O"1" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0145@0022.printChar: if memory_ready then next else repeat
+-- L0145@0022.printChar:  if memory_ready then next else repeat
 --  ready = 00, if (110) then 000000 else 000001, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 34 => "00" & O"6" & O"00" & O"01" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0147@0023. mem = write, xsel = cursorx, ysel = cursory,if false then next else return
+-- L0147@0023.  mem = write, xsel = cursorx, ysel = cursory, if false then next else return
 --  ready = 00, if (111) then 000000 else 000010, cursorx <= 000, cursory <= 000, data <= 00, mem = 10, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 35 => "00" & O"7" & O"00" & O"02" & O"0" & O"0" & "00" & "10" & '0' & '0' & '0' & '0' & '0',
 
--- L0150@0024.readMem: if memory_ready then next else repeat
+-- L0150@0024.readMem:  if memory_ready then next else repeat
 --  ready = 00, if (110) then 000000 else 000001, cursorx <= 000, cursory <= 000, data <= 00, mem = 00, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 36 => "00" & O"6" & O"00" & O"01" & O"0" & O"0" & "00" & "00" & '0' & '0' & '0' & '0' & '0',
 
--- L0152@0025. mem = read, xsel = cursorx, ysel = cursory, data <= memory,if false then next else return
+-- L0152@0025.  mem = read, xsel = cursorx, ysel = cursory, data <= memory, if false then next else return
 --  ready = 00, if (111) then 000000 else 000010, cursorx <= 000, cursory <= 000, data <= 10, mem = 01, xsel = 0, ysel = 0, altx <= 0, alty <= 0, reserved = 0;
 37 => "00" & O"7" & O"00" & O"02" & O"0" & O"0" & "10" & "01" & '0' & '0' & '0' & '0' & '0',
 

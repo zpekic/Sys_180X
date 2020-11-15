@@ -1,5 +1,5 @@
 --------------------------------------------------------
--- mcc V0.9.0627 - Custom microcode compiler (c)2020-... 
+-- mcc V0.9.1114 - Custom microcode compiler (c)2020-... 
 --    https://github.com/zpekic/MicroCodeCompiler
 --------------------------------------------------------
 -- Auto-generated file, do not modify. To customize, create 'mapper_template.vhd' file in mcc.exe folder
@@ -25,13 +25,13 @@ signal tty_instructionstart: std_logic_vector(5 downto 0);
 
 constant tty_mapper: tty_mapper_memory := (
 
--- L0084@000A. 0b00?_????
+-- L0084@000A. .map 0b00?_????
 0 => O"12",
 
--- L0088@000B. 0b000_0001
+-- L0088@000B. .map 0b000_0001
 1 => O"13",
 
--- L0103@0012. 0b000_0010
+-- L0103@0012. .map 0b000_0010
 2 => O"22",
 
 3 => O"12",
@@ -48,14 +48,14 @@ constant tty_mapper: tty_mapper_memory := (
 
 9 => O"12",
 
--- L0107@0013. 0b000_1010
+-- L0107@0013. .map 0b000_1010
 10 => O"23",
 
 11 => O"12",
 
 12 => O"12",
 
--- L0141@0021. 0b000_1101
+-- L0141@0021. .map 0b000_1101
 13 => O"41",
 
 14 => O"12",
