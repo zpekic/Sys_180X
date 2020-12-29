@@ -1,5 +1,5 @@
 --------------------------------------------------------
--- mcc V0.9.1114 - Custom microcode compiler (c)2020-... 
+-- mcc V0.9.1227 - Custom microcode compiler (c)2020-... 
 --    https://github.com/zpekic/MicroCodeCompiler
 --------------------------------------------------------
 -- Auto-generated file, do not modify. To customize, create 'code_template.vhd' file in mcc.exe folder
@@ -44,16 +44,16 @@ constant bus_state_fetch_memread: 	std_logic_vector(3 downto 0) := X"8";
 -- Value X"F" not allowed (name '-' is not assignable)
 ---- Start boilerplate code (use with utmost caution!)
 -- with cpu_bus_state select bus_state <=
---      exec_nop when cpu_exec_nop, -- default value
---      exec_memread when cpu_exec_memread,
---      exec_memwrite when cpu_exec_memwrite,
---      exec_ioread when cpu_exec_ioread,
---      exec_iowrite when cpu_exec_iowrite,
---      dma_memread when cpu_dma_memread,
---      dma_memwrite when cpu_dma_memwrite,
---      int_nop when cpu_int_nop,
---      fetch_memread when cpu_fetch_memread,
---      null when others;
+--      exec_nop when bus_state_exec_nop, -- default value
+--      exec_memread when bus_state_exec_memread,
+--      exec_memwrite when bus_state_exec_memwrite,
+--      exec_ioread when bus_state_exec_ioread,
+--      exec_iowrite when bus_state_exec_iowrite,
+--      dma_memread when bus_state_dma_memread,
+--      dma_memwrite when bus_state_dma_memwrite,
+--      int_nop when bus_state_int_nop,
+--      fetch_memread when bus_state_fetch_memread,
+--      exec_nop when others;
 ---- End boilerplate code
 
 --
@@ -143,7 +143,7 @@ constant reg_d_shift_dn_0: 	std_logic_vector(2 downto 0) := "011";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -171,7 +171,7 @@ constant reg_df_alu_cout: 	std_logic_vector(1 downto 0) := "11";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -199,7 +199,7 @@ constant reg_t_in: 	std_logic_vector(1 downto 0) := "11";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -227,7 +227,7 @@ constant reg_b_df_d_dn: 	std_logic_vector(1 downto 0) := "11";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -255,7 +255,7 @@ constant reg_x_p: 	std_logic_vector(1 downto 0) := "11";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -283,7 +283,7 @@ constant reg_p_alu_ylo: 	std_logic_vector(1 downto 0) := "10";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -300,7 +300,7 @@ constant reg_in_alu_y: 	std_logic := '1';
 --	    if (cpu_reg_in = reg_in_alu_y) then
 --		    reg_in <= alu_y;
 --	    end if;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -325,7 +325,7 @@ constant reg_q_one: 	std_logic_vector(1 downto 0) := "10";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -350,7 +350,7 @@ constant reg_mie_disable: 	std_logic_vector(1 downto 0) := "10";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -378,7 +378,7 @@ constant reg_trace_ss_disable_char: 	std_logic_vector(1 downto 0) := "11";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -403,7 +403,7 @@ constant reg_extend_one: 	std_logic_vector(1 downto 0) := "10";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -419,12 +419,12 @@ constant sel_reg_n: 	std_logic_vector(2 downto 0) := "100";
 constant sel_reg_p: 	std_logic_vector(2 downto 0) := "101";
 ---- Start boilerplate code (use with utmost caution!)
 -- with cpu_sel_reg select sel_reg <=
---      (others => '0') when cpu_zero, -- default value
---      one when cpu_one,
---      two when cpu_two,
---      x when cpu_x,
---      n when cpu_n,
---      p when cpu_p;
+--      (others => '0') when sel_reg_zero, -- default value
+--      one when sel_reg_one,
+--      two when sel_reg_two,
+--      x when sel_reg_x,
+--      n when sel_reg_n,
+--      p when sel_reg_p;
 ---- End boilerplate code
 
 --
@@ -461,7 +461,7 @@ constant reg_r_b_t: 	std_logic_vector(2 downto 0) := "110";
 --			when others =>
 --				null;
 --		end case;
--- end;
+-- end if;
 -- end process;
 ---- End boilerplate code
 
@@ -475,10 +475,10 @@ constant alu_r_b: 	std_logic_vector(1 downto 0) := "10";
 constant alu_r_reg_hi: 	std_logic_vector(1 downto 0) := "11";
 ---- Start boilerplate code (use with utmost caution!)
 -- with cpu_alu_r select alu_r <=
---      t when cpu_t, -- default value
---      d when cpu_d,
---      b when cpu_b,
---      reg_hi when cpu_reg_hi;
+--      t when alu_r_t, -- default value
+--      d when alu_r_d,
+--      b when alu_r_b,
+--      reg_hi when alu_r_reg_hi;
 ---- End boilerplate code
 
 --
@@ -491,10 +491,10 @@ constant alu_s_const: 	std_logic_vector(1 downto 0) := "10";
 constant alu_s_reg_lo: 	std_logic_vector(1 downto 0) := "11";
 ---- Start boilerplate code (use with utmost caution!)
 -- with cpu_alu_s select alu_s <=
---      bus when cpu_bus, -- default value
---      d when cpu_d,
---      const when cpu_const,
---      reg_lo when cpu_reg_lo;
+--      bus when alu_s_bus, -- default value
+--      d when alu_s_d,
+--      const when alu_s_const,
+--      reg_lo when alu_s_reg_lo;
 ---- End boilerplate code
 
 --
@@ -511,14 +511,14 @@ constant alu_f_nr_plus_s: 	std_logic_vector(2 downto 0) := "110";
 constant alu_f_pass_s: 	std_logic_vector(2 downto 0) := "111";
 ---- Start boilerplate code (use with utmost caution!)
 -- with cpu_alu_f select alu_f <=
---      xor when cpu_xor, -- default value
---      and when cpu_and,
---      ior when cpu_ior,
---      pass_r when cpu_pass_r,
---      r_plus_s when cpu_r_plus_s,
---      r_plus_ns when cpu_r_plus_ns,
---      nr_plus_s when cpu_nr_plus_s,
---      pass_s when cpu_pass_s;
+--      xor when alu_f_xor, -- default value
+--      and when alu_f_and,
+--      ior when alu_f_ior,
+--      pass_r when alu_f_pass_r,
+--      r_plus_s when alu_f_r_plus_s,
+--      r_plus_ns when alu_f_r_plus_ns,
+--      nr_plus_s when alu_f_nr_plus_s,
+--      pass_s when alu_f_pass_s;
 ---- End boilerplate code
 
 --
@@ -539,8 +539,8 @@ constant ct_oper_disable: 	std_logic_vector(3 downto 0) := X"0";
 constant ct_oper_enable: 	std_logic_vector(3 downto 0) := X"1";
 ---- Start boilerplate code (use with utmost caution!)
 -- with cpu_ct_oper select ct_oper <=
---      disable when cpu_disable, -- default value
---      enable when cpu_enable;
+--      disable when ct_oper_disable, -- default value
+--      enable when ct_oper_enable;
 ---- End boilerplate code
 
 
